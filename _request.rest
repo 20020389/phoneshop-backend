@@ -1,8 +1,18 @@
-POST http://localhost:4000/api/register
+POST http://localhost:4000/api/signup
 Content-Type: application/json
 
 {
-    "Email": "2002356@gmail.com",
+    "email": "2002393@gmail.com",
+    "password": "dai2002"
+}
+
+###
+
+POST http://localhost:4000/api/signin
+Content-Type: application/json
+
+{
+    "email": "2002393@gmail.com",
     "password": "dai2002"
 }
 
