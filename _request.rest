@@ -1,0 +1,15 @@
+POST http://localhost:4000/api/register
+Content-Type: application/json
+
+{
+    "Email": "2002356@gmail.com",
+    "password": "dai2002"
+}
+
+###
+
+GET http://localhost:4000/api/user?id=Nguyen
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiIyMDAyMzU2QGdtYWlsLmNvbSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkRFRkFVTFQiLCJleHAiOjE2NzcwMzkzOTIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NDAwMC8iLCJhdWQiOiIqIn0.E3Y07QLdIlj6wQe9oiLhPD2q6ytvmzwi3E5geuQyTpU
+
+{}

@@ -1,0 +1,14 @@
+{
+  "name": "prisma-csharp",
+  "private": "true",
+  "scripts": {
+    "db": "cd ./Generator && yarn start",
+    "dev": "nodemon --exec dotnet run"
+  },
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
