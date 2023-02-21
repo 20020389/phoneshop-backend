@@ -28,7 +28,7 @@ builder.Services
       };
     });
 
-builder.Services.AddSingleton<PrismaClient>();
+
 builder.Services.AddSingleton<UserService>();
 
 builder.Services.AddControllers();
