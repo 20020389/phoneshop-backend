@@ -1,5 +1,5 @@
 {
-  "name": "prisma-csharp",
+  "name": "phoneshop",
   "private": "true",
   "scripts": {
     "db": "cd ./Generator && yarn start",
