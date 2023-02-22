@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "build": "npx prisma migrate dev",
-    "clean": "rimraf ./prisma/migrations"
+    "clean": "rimraf ./migrations"
   },
   "devDependencies": {
     "prisma": "^4.10.1"

@@ -18,6 +18,8 @@ public partial class PrismaClient : DbContext
 
     public virtual DbSet<Phone> Phones { get; set; }
 
+    public virtual DbSet<Phoneoffer> Phoneoffers { get; set; }
+
     public virtual DbSet<PrismaMigration> PrismaMigrations { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
@@ -34,11 +36,59 @@ public partial class PrismaClient : DbContext
 
             entity.ToTable("phone");
 
+            entity.HasIndex(e => e.Uid, "Phone_uid_key").IsUnique();
+
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Price).HasColumnName("price");
-            entity.Property(e => e.Title)
+            entity.Property(e => e.Description)
                 .HasMaxLength(191)
-                .HasColumnName("title");
+                .HasColumnName("description");
+            entity.Property(e => e.Image)
+                .HasMaxLength(191)
+                .HasColumnName("image");
+            entity.Property(e => e.Name)
+                .HasMaxLength(191)
+                .HasColumnName("name");
+            entity.Property(e => e.Price).HasColumnName("price");
+            entity.Property(e => e.Uid)
+                .HasMaxLength(191)
+                .HasDefaultValueSql("'uuid()'")
+                .HasColumnName("uid");
+        });
+
+        modelBuilder.Entity<Phoneoffer>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("phoneoffer");
+
+            entity.HasIndex(e => e.PhoneId, "PhoneOffer_phoneId_fkey");
+
+            entity.HasIndex(e => e.Uid, "PhoneOffer_uid_key").IsUnique();
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Color)
+                .HasMaxLength(191)
+                .HasColumnName("color");
+            entity.Property(e => e.Guarantee)
+                .HasMaxLength(191)
+                .HasColumnName("guarantee");
+            entity.Property(e => e.PhoneId)
+                .HasMaxLength(191)
+                .HasColumnName("phoneId");
+            entity.Property(e => e.Price).HasColumnName("price");
+            entity.Property(e => e.Storage)
+                .HasMaxLength(191)
+                .HasColumnName("storage");
+            entity.Property(e => e.Uid)
+                .HasMaxLength(191)
+                .HasDefaultValueSql("'uuid()'")
+                .HasColumnName("uid");
+
+            entity.HasOne(d => d.Phone).WithMany(p => p.Phoneoffers)
+                .HasPrincipalKey(p => p.Uid)
+                .HasForeignKey(d => d.PhoneId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("PhoneOffer_phoneId_fkey");
         });
 
         modelBuilder.Entity<PrismaMigration>(entity =>

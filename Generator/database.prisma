@@ -27,7 +27,22 @@ model User {
 }
 
 model Phone {
-  id    Int    @id @default(autoincrement())
-  title String
-  price Int
+  id          Int          @id @default(autoincrement())
+  uid         String       @unique @default(dbgenerated("(UUID())"))
+  name        String
+  price       Int
+  description String?
+  image       String
+  offers      PhoneOffer[]
+}
+
+model PhoneOffer {
+  id        Int    @id @default(autoincrement())
+  uid       String @unique @default(dbgenerated("(UUID())"))
+  price     Int
+  color     String //array
+  storage   String //array
+  guarantee String
+  Phone     Phone  @relation(fields: [phoneId], references: [uid])
+  phoneId   String
 }
