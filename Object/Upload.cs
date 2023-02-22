@@ -1,0 +1,2 @@
+namespace PhoneShop.Object;
+

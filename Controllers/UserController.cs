@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PhoneShop.Lib;
 using PhoneShop.Middleware;
-using PhoneShop.Model;
+using PhoneShop.Object;
 using PhoneShop.Service;
 
 namespace PhoneShop.Controllers;

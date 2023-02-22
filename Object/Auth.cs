@@ -1,8 +1,8 @@
 
 
-using System.Text.Json.Serialization;
+using PhoneShop.Model;
 
-namespace PhoneShop.Model;
+namespace PhoneShop.Object;
 
 public class UserRole
 {

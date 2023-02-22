@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using PhoneShop.Lib;
 using PhoneShop.Lib.Extension;
 using PhoneShop.Model;
-using PhoneShop.Prisma;
+using PhoneShop.Object;
 using BC = BCrypt.Net.BCrypt;
 
 namespace PhoneShop.Service;
