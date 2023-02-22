@@ -20,6 +20,8 @@ public partial class PrismaClient : DbContext
 
     public virtual DbSet<Phoneoffer> Phoneoffers { get; set; }
 
+    public virtual DbSet<Phonerating> Phoneratings { get; set; }
+
     public virtual DbSet<PrismaMigration> PrismaMigrations { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
@@ -36,12 +38,17 @@ public partial class PrismaClient : DbContext
 
             entity.ToTable("phone");
 
+            entity.HasIndex(e => e.RatingId, "Phone_ratingId_key").IsUnique();
+
             entity.HasIndex(e => e.Uid, "Phone_uid_key").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Description)
                 .HasMaxLength(191)
                 .HasColumnName("description");
+            entity.Property(e => e.Detail)
+                .HasMaxLength(191)
+                .HasColumnName("detail");
             entity.Property(e => e.Image)
                 .HasMaxLength(191)
                 .HasColumnName("image");
@@ -49,10 +56,25 @@ public partial class PrismaClient : DbContext
                 .HasMaxLength(191)
                 .HasColumnName("name");
             entity.Property(e => e.Price).HasColumnName("price");
+            entity.Property(e => e.Profile)
+                .HasMaxLength(191)
+                .HasColumnName("profile");
+            entity.Property(e => e.RatingId)
+                .HasMaxLength(191)
+                .HasColumnName("ratingId");
+            entity.Property(e => e.Tags)
+                .HasMaxLength(191)
+                .HasColumnName("tags");
             entity.Property(e => e.Uid)
                 .HasMaxLength(191)
                 .HasDefaultValueSql("'uuid()'")
                 .HasColumnName("uid");
+
+            entity.HasOne(d => d.Rating).WithOne(p => p.Phone)
+                .HasPrincipalKey<Phonerating>(p => p.Uid)
+                .HasForeignKey<Phone>(d => d.RatingId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("Phone_ratingId_fkey");
         });
 
         modelBuilder.Entity<Phoneoffer>(entity =>
@@ -89,6 +111,23 @@ public partial class PrismaClient : DbContext
                 .HasForeignKey(d => d.PhoneId)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("PhoneOffer_phoneId_fkey");
+        });
+
+        modelBuilder.Entity<Phonerating>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("phonerating");
+
+            entity.HasIndex(e => e.Uid, "PhoneRating_uid_key").IsUnique();
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.RatingValue).HasColumnName("ratingValue");
+            entity.Property(e => e.ReviewCount).HasColumnName("reviewCount");
+            entity.Property(e => e.Uid)
+                .HasMaxLength(191)
+                .HasDefaultValueSql("'uuid()'")
+                .HasColumnName("uid");
         });
 
         modelBuilder.Entity<PrismaMigration>(entity =>
