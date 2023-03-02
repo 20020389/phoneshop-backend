@@ -13,7 +13,7 @@ public partial class Phone
 
     public int Price { get; set; }
 
-    public string Image { get; set; } = null!;
+    public string Images { get; set; } = null!;
 
     public string? Tags { get; set; }
 

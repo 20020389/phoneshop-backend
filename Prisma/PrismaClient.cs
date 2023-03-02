@@ -49,9 +49,9 @@ public partial class PrismaClient : DbContext
             entity.Property(e => e.Detail)
                 .HasMaxLength(191)
                 .HasColumnName("detail");
-            entity.Property(e => e.Image)
+            entity.Property(e => e.Images)
                 .HasMaxLength(191)
-                .HasColumnName("image");
+                .HasColumnName("images");
             entity.Property(e => e.Name)
                 .HasMaxLength(191)
                 .HasColumnName("name");
@@ -175,6 +175,9 @@ public partial class PrismaClient : DbContext
             entity.Property(e => e.Email)
                 .HasMaxLength(191)
                 .HasColumnName("email");
+            entity.Property(e => e.Image)
+                .HasMaxLength(191)
+                .HasColumnName("image");
             entity.Property(e => e.LastLogin)
                 .HasDefaultValueSql("'CURRENT_TIMESTAMP(3)'")
                 .HasColumnType("datetime(3)")

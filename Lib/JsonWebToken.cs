@@ -8,59 +8,61 @@ namespace PhoneShop.Lib;
 
 public class JWT
 {
-    private SigningCredentials _credentials;
-    private String _issuer;
-    private String _audience;
+  private SigningCredentials _credentials;
+  private String _issuer;
+  private String _audience;
 
-    public JWT(IConfiguration config)
+  private int _expires;
+
+  public int expires { get => _expires; }
+
+  public JWT(IConfiguration config)
+  {
+    var privateKey = config["JWT:Key"] ?? "";
+    var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(privateKey));
+    var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+    _credentials = credentials;
+    _issuer = config["JWT:Issuer"] ?? "";
+    _audience = config["JWT:Audience"] ?? "";
+    _expires = 1;
+  }
+
+  public String generateToken(Claim[] payload, int? exp = null)
+  {
+    var token = new JwtSecurityToken(
+        _issuer,
+        _audience,
+        payload,
+        expires: DateTime.Now.AddDays(exp ?? _expires),
+        signingCredentials: _credentials
+    );
+
+    return new JwtSecurityTokenHandler().WriteToken(token);
+  }
+
+  public ClaimsPrincipal validateToken(String token)
+  {
+    var paramaters = new TokenValidationParameters()
     {
-        var privateKey = config["JWT:Key"] ?? "";
-        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(privateKey));
-        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+      ValidateIssuer = true,
+      ValidateLifetime = true,
+      ClockSkew = TimeSpan.Zero,
+      ValidateIssuerSigningKey = true,
+      ValidIssuer = _issuer,
+      ValidAudience = _audience,
+      IssuerSigningKey = _credentials.Key,
+    };
 
-        _credentials = credentials;
-        _issuer = config["JWT:Issuer"] ?? "";
-        _audience = config["JWT:Audience"] ?? "";
-    }
-
-    public String generateToken(Claim[] payload, DateTime? expires = null)
+    var handler = new JwtSecurityTokenHandler();
+    SecurityToken securityToken;
+    try
     {
-        var token = new JwtSecurityToken(
-            _issuer,
-            _audience,
-            payload,
-            expires: expires ?? DateTime.Now.AddDays(1),
-            signingCredentials: _credentials
-        );
-
-        return new JwtSecurityTokenHandler().WriteToken(token);
+      return handler.ValidateToken(token, paramaters, out securityToken);
     }
-
-    public bool validateToken(String token)
+    catch (Exception e)
     {
-        var paramaters = new TokenValidationParameters()
-        {
-            ValidateIssuer = true,
-            ValidateLifetime = true,
-            ClockSkew = TimeSpan.Zero,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = _issuer,
-            ValidAudience = _audience,
-            IssuerSigningKey = _credentials.Key,
-        };
-
-        var handler = new JwtSecurityTokenHandler();
-        SecurityToken securityToken;
-        try
-        {
-            handler.ValidateToken(token, paramaters, out securityToken);
-        }
-        catch (SecurityTokenException e)
-        {
-            System.Console.WriteLine(e);
-            throw new HttpException(e.Message, HttpStatusCode.BadRequest);
-        }
-
-        return securityToken != null;
+      throw new HttpException("Unauthorized", HttpStatusCode.Unauthorized);
     }
+  }
 }

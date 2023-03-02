@@ -47,8 +47,10 @@ public class UserController : Controller
             new Claim(ClaimTypes.Role, UserRole.DEFAULT)
         };
 
+    var token = $"Bearer {_jwt.generateToken(claims)}";
+
     return Results.Json(
-        new { data = newUser, token = $"Bearer {_jwt.generateToken(claims)}" }
+        new { data = newUser, token }
     );
   }
 
@@ -72,8 +74,10 @@ public class UserController : Controller
             new Claim(ClaimTypes.Role, UserRole.DEFAULT)
         };
 
+    var token = $"Bearer {_jwt.generateToken(claims)}";
+
     return Results.Json(
-        new { data = newUser, token = $"Bearer {_jwt.generateToken(claims)}" }
+        new { data = newUser, token }
     );
   }
 

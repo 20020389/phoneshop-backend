@@ -17,6 +17,7 @@ model User {
   email        String   @unique
   password     String
   name         String?
+  image        String?
   phoneNumber  String?
   profile      String?
   role         UserRole @default(DEFAULT)
@@ -31,7 +32,7 @@ model Phone {
   uid         String       @unique @default(dbgenerated("(UUID())"))
   name        String
   price       Int
-  image       String
+  images      String
   tags        String?
   profile     String?
   description String?

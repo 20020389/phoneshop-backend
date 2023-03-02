@@ -15,6 +15,8 @@ public partial class User
 
     public string? Name { get; set; }
 
+    public string? Image { get; set; }
+
     public string? PhoneNumber { get; set; }
 
     public string? Profile { get; set; }
