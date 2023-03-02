@@ -2,8 +2,9 @@ POST http://localhost:4000/api/signup
 Content-Type: application/json
 
 {
-    "email": "2002389@gmail.com",
-    "password": "dai123"
+    "email": "2002399@gmail.com",
+    "password": "dai123",
+    "role": "STORE"
 }
 
 ###

@@ -10,6 +10,10 @@ public class Validator
   {
     try
     {
+      if (email == "" || email == null)
+      {
+        return false;
+      }
       new MailAddress(email);
       return true;
     }

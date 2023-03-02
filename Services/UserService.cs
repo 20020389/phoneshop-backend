@@ -74,7 +74,8 @@ public class UserService
       Password = BC.HashPassword(body.Password),
       Name = body.Name ?? body.Email,
       PhoneNumber = body.PhoneNumber,
-      Profile = body.Profile
+      Profile = body.Profile,
+      Role = body.Role ?? UserRole.DEFAULT
     };
   }
 }

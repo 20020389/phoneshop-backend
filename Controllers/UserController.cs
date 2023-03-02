@@ -37,6 +37,7 @@ public class UserController : Controller
       return Results.BadRequest("missing body from request");
     }
 
+    Validator.validateRegister(new RegisterBody { Email = body.Email, Password = body.Password });
 
     var newUser = await _userService.login(body);
 
@@ -71,7 +72,7 @@ public class UserController : Controller
     {
         new Claim("uid", newUser.Uid),
             new Claim(ClaimTypes.Email, body.Email),
-            new Claim(ClaimTypes.Role, UserRole.DEFAULT)
+            new Claim(ClaimTypes.Role, body.Role ?? UserRole.DEFAULT)
         };
 
     var token = $"Bearer {_jwt.generateToken(claims)}";
