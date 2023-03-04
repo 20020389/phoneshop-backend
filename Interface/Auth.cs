@@ -33,7 +33,13 @@ public class LoginBody
 
 }
 
-public class UserWithoutPassword : User
+public class UpdateUserBody
 {
-  public new string? Password;
+  public string? Name { get; set; }
+
+  public string? PhoneNumber { get; set; }
+
+  public string? Profile { get; set; }
+
+  public string? Image { get; set; }
 }

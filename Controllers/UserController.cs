@@ -98,4 +98,21 @@ public class UserController : Controller
     }
     return Results.Unauthorized();
   }
+
+  [HttpPost("user")]
+  [Authorize]
+  public async Task<IResult> updateUser([FromBody] UpdateUserBody body)
+  {
+    var identity = HttpContext.User.Identity as ClaimsIdentity;
+    if (identity != null)
+    {
+      var userClaims = identity.Claims;
+      var uid = userClaims.FirstOrDefault(claim => claim.Type == "uid")?.Value ?? "null";
+      return Results.Json(new
+      {
+        data = await _userService.updateUser(uid, body),
+      });
+    }
+    return Results.Unauthorized();
+  }
 }

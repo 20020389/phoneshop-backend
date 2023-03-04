@@ -3,7 +3,7 @@ using PhoneShop.Prisma;
 
 namespace PhoneShop.Lib.Extension;
 
-public class DBExtension
+public class PrismaExtension
 {
   public static async Task<T> runTransaction<T>(Func<PrismaClient, Task<T>> callback)
   {
