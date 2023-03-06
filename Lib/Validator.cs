@@ -1,6 +1,6 @@
 using System.Net.Mail;
 using System.Text.RegularExpressions;
-using PhoneShop.Object;
+using PhoneShop.Interface;
 
 namespace PhoneShop.Lib;
 

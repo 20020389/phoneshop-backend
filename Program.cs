@@ -30,6 +30,7 @@ builder.Services
 
 
 builder.Services.AddSingleton<UserService>();
+builder.Services.AddSingleton<StoreService>();
 
 builder.Services.AddControllers();
 

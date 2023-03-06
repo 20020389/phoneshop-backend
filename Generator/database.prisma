@@ -32,6 +32,10 @@ model User {
 model Store {
   id           Int           @id @default(autoincrement())
   uid          String        @unique @default(dbgenerated("(UUID())"))
+  name         String
+  location     String
+  group        String // Hà Nội - Hồ Chí Minh
+  phoneNumber  String?
   products     Phone[]
   managers     User[]
   transactions Transaction[]

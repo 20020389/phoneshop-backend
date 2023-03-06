@@ -201,6 +201,18 @@ public partial class PrismaClient : DbContext
             entity.HasIndex(e => e.Uid, "Store_uid_key").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Group)
+                .HasMaxLength(191)
+                .HasColumnName("group");
+            entity.Property(e => e.Location)
+                .HasMaxLength(191)
+                .HasColumnName("location");
+            entity.Property(e => e.Name)
+                .HasMaxLength(191)
+                .HasColumnName("name");
+            entity.Property(e => e.PhoneNumber)
+                .HasMaxLength(191)
+                .HasColumnName("phoneNumber");
             entity.Property(e => e.Uid)
                 .HasMaxLength(191)
                 .HasDefaultValueSql("'uuid()'")

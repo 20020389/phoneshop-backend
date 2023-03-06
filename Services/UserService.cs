@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using PhoneShop.Lib;
 using PhoneShop.Lib.Extension;
 using PhoneShop.Model;
-using PhoneShop.Object;
+using PhoneShop.Interface;
 using BC = BCrypt.Net.BCrypt;
 
 namespace PhoneShop.Service;
@@ -60,6 +60,7 @@ public class UserService
     await PrismaExtension.runTransaction(async db =>
     {
       await db.Users.AddAsync(newUser);
+      db.SaveChanges();
     });
 
     newUser.Password = "";

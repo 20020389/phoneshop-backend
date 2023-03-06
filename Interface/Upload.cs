@@ -1,2 +1,2 @@
-namespace PhoneShop.Object;
+namespace PhoneShop.Interface;
 

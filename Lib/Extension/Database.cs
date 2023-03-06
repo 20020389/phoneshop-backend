@@ -9,20 +9,24 @@ public class PrismaExtension
   {
     using (var db = new PrismaClient())
     {
-      try
+      using (var transaction = db.Database.BeginTransaction())
       {
-        var data = await callback(db);
-        db.SaveChanges();
-        return data;
-      }
-      catch (System.Exception e)
-      {
-        if (e is DbUpdateException && e.InnerException != null)
+        try
         {
-          throw new HttpException(e.InnerException.Message);
+          var data = await callback(db);
+          transaction.Commit();
+          return data;
         }
+        catch (System.Exception e)
+        {
+          transaction.Rollback();
+          if (e is DbUpdateException && e.InnerException != null)
+          {
+            throw new HttpException(e.InnerException.Message);
+          }
 
-        throw new HttpException(e.Message);
+          throw new HttpException(e.Message);
+        }
       }
     }
   }

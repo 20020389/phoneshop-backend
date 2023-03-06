@@ -2,7 +2,7 @@
 
 using PhoneShop.Model;
 
-namespace PhoneShop.Object;
+namespace PhoneShop.Interface;
 
 public class UserRole
 {
