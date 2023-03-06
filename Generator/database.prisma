@@ -12,19 +12,29 @@ enum UserRole {
 }
 
 model User {
-  id           Int      @id @default(autoincrement())
-  uid          String   @unique @default(dbgenerated("(UUID())"))
-  email        String   @unique
+  id           Int           @id @default(autoincrement())
+  uid          String        @unique @default(dbgenerated("(UUID())"))
+  email        String        @unique
   password     String
   name         String?
   image        String?
   phoneNumber  String?
   profile      String?
-  role         UserRole @default(DEFAULT)
-  verified     Boolean  @default(false)
-  updateAt     DateTime @default(now())
-  lastLogin    DateTime @default(now())
-  registeredAt DateTime @default(now())
+  role         UserRole      @default(DEFAULT)
+  verified     Boolean       @default(false)
+  updateAt     DateTime      @default(now())
+  lastLogin    DateTime      @default(now())
+  registeredAt DateTime      @default(now())
+  Store        Store[]
+  Transaction  Transaction[]
+}
+
+model Store {
+  id           Int           @id @default(autoincrement())
+  uid          String        @unique @default(dbgenerated("(UUID())"))
+  products     Phone[]
+  managers     User[]
+  transactions Transaction[]
 }
 
 model Phone {
@@ -36,27 +46,45 @@ model Phone {
   tags        String?
   profile     String?
   description String?
-  detail      String?
+  detail      String? // thông số kỹ thuật
+  sold        Boolean?
   offers      PhoneOffer[]
   rating      PhoneRating  @relation(fields: [ratingId], references: [uid])
   ratingId    String       @unique
+  Stores      Store[]
 }
 
 model PhoneOffer {
-  id        Int    @id @default(autoincrement())
-  uid       String @unique @default(dbgenerated("(UUID())"))
-  price     Int
-  color     String //array
-  storage   String
-  guarantee String
-  Phone     Phone  @relation(fields: [phoneId], references: [uid])
-  phoneId   String
+  id      Int    @id @default(autoincrement())
+  uid     String @unique @default(dbgenerated("(UUID())"))
+  price   Int
+  color   String //array
+  storage String
+  Phone   Phone  @relation(fields: [phoneId], references: [uid])
+  phoneId String
 }
 
 model PhoneRating {
   id          Int    @id @default(autoincrement())
   uid         String @unique @default(dbgenerated("(UUID())"))
   ratingValue Float
-  reviewCount Int
+  evaluated   String
   Phone       Phone?
+}
+
+model Transaction {
+  id         Int              @id @default(autoincrement())
+  uid        String           @unique @default(dbgenerated("(UUID())"))
+  productsID StringTemplate[]
+  consumer   User             @relation(fields: [userId], references: [id])
+  userId     Int
+  providers  Store[]
+}
+
+// define based
+model StringTemplate {
+  id            Int          @id @default(autoincrement())
+  value         String
+  Transaction   Transaction? @relation(fields: [transactionId], references: [id])
+  transactionId Int?
 }
