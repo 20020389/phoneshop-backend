@@ -9,7 +9,7 @@
     "clean": "rimraf ./migrations"
   },
   "devDependencies": {
-    "prisma": "^4.10.1"
+    "prisma": "^4.11.0"
   },
   "dependencies": {
     "@types/node": "^18.14.0",
