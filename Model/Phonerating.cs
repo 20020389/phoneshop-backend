@@ -11,7 +11,7 @@ public partial class Phonerating
 
     public double RatingValue { get; set; }
 
-    public int ReviewCount { get; set; }
+    public string Evaluated { get; set; } = null!;
 
     public virtual Phone? Phone { get; set; }
 }

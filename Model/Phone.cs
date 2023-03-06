@@ -23,6 +23,8 @@ public partial class Phone
 
     public string? Detail { get; set; }
 
+    public bool? Sold { get; set; }
+
     public string RatingId { get; set; } = null!;
 
     public virtual ICollection<Phoneoffer> Phoneoffers { get; } = new List<Phoneoffer>();

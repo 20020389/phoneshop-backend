@@ -22,7 +22,19 @@ public partial class PrismaClient : DbContext
 
     public virtual DbSet<Phonerating> Phoneratings { get; set; }
 
+    public virtual DbSet<Phonetostore> Phonetostores { get; set; }
+
     public virtual DbSet<PrismaMigration> PrismaMigrations { get; set; }
+
+    public virtual DbSet<Store> Stores { get; set; }
+
+    public virtual DbSet<Storetotransaction> Storetotransactions { get; set; }
+
+    public virtual DbSet<Storetouser> Storetousers { get; set; }
+
+    public virtual DbSet<Stringtemplate> Stringtemplates { get; set; }
+
+    public virtual DbSet<Transaction> Transactions { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
 
@@ -62,6 +74,7 @@ public partial class PrismaClient : DbContext
             entity.Property(e => e.RatingId)
                 .HasMaxLength(191)
                 .HasColumnName("ratingId");
+            entity.Property(e => e.Sold).HasColumnName("sold");
             entity.Property(e => e.Tags)
                 .HasMaxLength(191)
                 .HasColumnName("tags");
@@ -91,9 +104,6 @@ public partial class PrismaClient : DbContext
             entity.Property(e => e.Color)
                 .HasMaxLength(191)
                 .HasColumnName("color");
-            entity.Property(e => e.Guarantee)
-                .HasMaxLength(191)
-                .HasColumnName("guarantee");
             entity.Property(e => e.PhoneId)
                 .HasMaxLength(191)
                 .HasColumnName("phoneId");
@@ -122,12 +132,33 @@ public partial class PrismaClient : DbContext
             entity.HasIndex(e => e.Uid, "PhoneRating_uid_key").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Evaluated)
+                .HasMaxLength(191)
+                .HasColumnName("evaluated");
             entity.Property(e => e.RatingValue).HasColumnName("ratingValue");
-            entity.Property(e => e.ReviewCount).HasColumnName("reviewCount");
             entity.Property(e => e.Uid)
                 .HasMaxLength(191)
                 .HasDefaultValueSql("'uuid()'")
                 .HasColumnName("uid");
+        });
+
+        modelBuilder.Entity<Phonetostore>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToTable("_phonetostore");
+
+            entity.HasIndex(e => new { e.A, e.B }, "_PhoneToStore_AB_unique").IsUnique();
+
+            entity.HasIndex(e => e.B, "_PhoneToStore_B_index");
+
+            entity.HasOne(d => d.ANavigation).WithMany()
+                .HasForeignKey(d => d.A)
+                .HasConstraintName("_PhoneToStore_A_fkey");
+
+            entity.HasOne(d => d.BNavigation).WithMany()
+                .HasForeignKey(d => d.B)
+                .HasConstraintName("_PhoneToStore_B_fkey");
         });
 
         modelBuilder.Entity<PrismaMigration>(entity =>
@@ -159,6 +190,102 @@ public partial class PrismaClient : DbContext
                 .HasDefaultValueSql("'CURRENT_TIMESTAMP(3)'")
                 .HasColumnType("datetime(3)")
                 .HasColumnName("started_at");
+        });
+
+        modelBuilder.Entity<Store>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("store");
+
+            entity.HasIndex(e => e.Uid, "Store_uid_key").IsUnique();
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Uid)
+                .HasMaxLength(191)
+                .HasDefaultValueSql("'uuid()'")
+                .HasColumnName("uid");
+        });
+
+        modelBuilder.Entity<Storetotransaction>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToTable("_storetotransaction");
+
+            entity.HasIndex(e => new { e.A, e.B }, "_StoreToTransaction_AB_unique").IsUnique();
+
+            entity.HasIndex(e => e.B, "_StoreToTransaction_B_index");
+
+            entity.HasOne(d => d.ANavigation).WithMany()
+                .HasForeignKey(d => d.A)
+                .HasConstraintName("_StoreToTransaction_A_fkey");
+
+            entity.HasOne(d => d.BNavigation).WithMany()
+                .HasForeignKey(d => d.B)
+                .HasConstraintName("_StoreToTransaction_B_fkey");
+        });
+
+        modelBuilder.Entity<Storetouser>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToTable("_storetouser");
+
+            entity.HasIndex(e => new { e.A, e.B }, "_StoreToUser_AB_unique").IsUnique();
+
+            entity.HasIndex(e => e.B, "_StoreToUser_B_index");
+
+            entity.HasOne(d => d.ANavigation).WithMany()
+                .HasForeignKey(d => d.A)
+                .HasConstraintName("_StoreToUser_A_fkey");
+
+            entity.HasOne(d => d.BNavigation).WithMany()
+                .HasForeignKey(d => d.B)
+                .HasConstraintName("_StoreToUser_B_fkey");
+        });
+
+        modelBuilder.Entity<Stringtemplate>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("stringtemplate");
+
+            entity.HasIndex(e => e.TransactionId, "StringTemplate_transactionId_fkey");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.TransactionId).HasColumnName("transactionId");
+            entity.Property(e => e.Value)
+                .HasMaxLength(191)
+                .HasColumnName("value");
+
+            entity.HasOne(d => d.Transaction).WithMany(p => p.Stringtemplates)
+                .HasForeignKey(d => d.TransactionId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("StringTemplate_transactionId_fkey");
+        });
+
+        modelBuilder.Entity<Transaction>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("transaction");
+
+            entity.HasIndex(e => e.Uid, "Transaction_uid_key").IsUnique();
+
+            entity.HasIndex(e => e.UserId, "Transaction_userId_fkey");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Uid)
+                .HasMaxLength(191)
+                .HasDefaultValueSql("'uuid()'")
+                .HasColumnName("uid");
+            entity.Property(e => e.UserId).HasColumnName("userId");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Transactions)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("Transaction_userId_fkey");
         });
 
         modelBuilder.Entity<User>(entity =>

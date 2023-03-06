@@ -30,4 +30,6 @@ public partial class User
     public DateTime LastLogin { get; set; }
 
     public DateTime RegisteredAt { get; set; }
+
+    public virtual ICollection<Transaction> Transactions { get; } = new List<Transaction>();
 }

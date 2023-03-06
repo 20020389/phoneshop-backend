@@ -15,8 +15,6 @@ public partial class Phoneoffer
 
     public string Storage { get; set; } = null!;
 
-    public string Guarantee { get; set; } = null!;
-
     public string PhoneId { get; set; } = null!;
 
     public virtual Phone Phone { get; set; } = null!;
