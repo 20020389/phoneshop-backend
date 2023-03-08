@@ -10,7 +10,7 @@ namespace PhoneShop.Controllers;
 
 [HttpException]
 [ApiController]
-[Route("api")]
+[Route("api/store")]
 public class StoreController : Controller
 {
   private readonly StoreService _storeService;
@@ -19,7 +19,33 @@ public class StoreController : Controller
     _storeService = storeService;
   }
 
-  [HttpPost("store")]
+  [HttpGet("userstores")]
+  [Authorize]
+  public async Task<IResult> getStores()
+  {
+    var identity = HttpContext.User.Identity as ClaimsIdentity;
+    if (identity != null)
+    {
+      var userClaims = identity.Claims;
+      var uid = userClaims.FirstOrDefault(claim => claim.Type == "uid")?.Value ?? "null";
+      return Results.Json(new
+      {
+        data = (await _storeService.getUserStores(uid))
+      });
+    }
+    return Results.Unauthorized();
+  }
+
+  [HttpGet("id/{storeId}")]
+  public async Task<IResult> getStoreData(String storeId)
+  {
+    return Results.Json(new
+    {
+      data = (await _storeService.getStore(storeId))
+    });
+  }
+
+  [HttpPost]
   [Authorize]
   public async Task<IResult> createStore([FromBody] CreateStoreBody body)
   {
@@ -32,7 +58,7 @@ public class StoreController : Controller
       //lấy giá trị của thuộc tính uid trong các thông tin chi tiết của người dùng. Nếu không tìm thấy giá trị này, một chuỗi rỗng sẽ được trả về.
       return Results.Json(new
       {
-        data = await _storeService.createStore(uid, body)
+        data = (await _storeService.createStore(uid, body))
       });
     }
     return Results.Unauthorized();//trả về mã trạng thái HTTP 401 Unauthorized nếu người dùng chưa được xác thực.

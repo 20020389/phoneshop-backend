@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.Json;
 using Microsoft.IdentityModel.Tokens;
 using PhoneShop.Prisma;
 using PhoneShop.Service;
@@ -9,6 +10,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Add configs
 
 // Add services to the container.
+
+builder.Services.Configure<JsonOptions>(options =>
+{
+  options.SerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+});
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

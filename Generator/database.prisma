@@ -11,6 +11,12 @@ enum UserRole {
   DEFAULT
 }
 
+enum TransactionStatus {
+  PROCESSING
+  SUCCESS
+  REFUSE
+}
+
 model User {
   id           Int           @id @default(autoincrement())
   uid          String        @unique @default(dbgenerated("(UUID())"))
@@ -27,6 +33,7 @@ model User {
   registeredAt DateTime      @default(now())
   Store        Store[]
   Transaction  Transaction[]
+  Cart         Cart?
 }
 
 model Store {
@@ -39,6 +46,8 @@ model Store {
   products     Phone[]
   managers     User[]
   transactions Transaction[]
+  updateAt     DateTime      @default(now())
+  createAt     DateTime      @default(now())
 }
 
 model Phone {
@@ -46,16 +55,18 @@ model Phone {
   uid         String       @unique @default(dbgenerated("(UUID())"))
   name        String
   price       Int
-  images      String
-  tags        String?
+  images      String?
+  tags        String? //keyword hỗ trợ tìm kiếm
   profile     String?
   description String?
   detail      String? // thông số kỹ thuật
-  sold        Boolean?
+  sold        String? // uid của transaction, chưa bán là null  
   offers      PhoneOffer[]
-  rating      PhoneRating  @relation(fields: [ratingId], references: [uid])
-  ratingId    String       @unique
+  rating      PhoneRating? @relation(fields: [ratingId], references: [uid])
+  ratingId    String?      @unique
   Stores      Store[]
+  updateAt    DateTime     @default(now())
+  createAt    DateTime     @default(now())
 }
 
 model PhoneOffer {
@@ -72,17 +83,28 @@ model PhoneRating {
   id          Int    @id @default(autoincrement())
   uid         String @unique @default(dbgenerated("(UUID())"))
   ratingValue Float
-  evaluated   String
+  evaluated   String //số lượt đánh giá
   Phone       Phone?
 }
 
 model Transaction {
-  id         Int              @id @default(autoincrement())
-  uid        String           @unique @default(dbgenerated("(UUID())"))
+  id         Int               @id @default(autoincrement())
+  uid        String            @unique @default(dbgenerated("(UUID())"))
   productsID StringTemplate[]
-  consumer   User             @relation(fields: [userId], references: [id])
+  status     TransactionStatus
+  consumer   User              @relation(fields: [userId], references: [id])
   userId     Int
   providers  Store[]
+  updateAt   DateTime          @default(now())
+  createAt   DateTime          @default(now())
+}
+
+model Cart {
+  id     Int              @id @default(autoincrement())
+  uid    String           @unique @default(dbgenerated("(UUID())"))
+  User   User             @relation(fields: [userId], references: [uid])
+  userId String           @unique
+  phones StringTemplate[]
 }
 
 // define based
@@ -91,4 +113,6 @@ model StringTemplate {
   value         String
   Transaction   Transaction? @relation(fields: [transactionId], references: [id])
   transactionId Int?
+  Cart          Cart?        @relation(fields: [cartId], references: [id])
+  cartId        Int?
 }

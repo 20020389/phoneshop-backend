@@ -57,7 +57,7 @@ public class UserService
     Validator.validateRegister(body);
     var newUser = createUser(body);
 
-    await PrismaExtension.runTransaction(async db =>
+    await PrismaExtension.runTask(async db =>
     {
       await db.Users.AddAsync(newUser);
       db.SaveChanges();
@@ -68,7 +68,7 @@ public class UserService
     return newUser;
   }
 
-  public async Task<User?> updateUser(string uid, UpdateUserBody body)
+  public async Task<User> updateUser(string uid, UpdateUserBody body)
   {
     return await PrismaExtension.runTransaction(async db =>
     {

@@ -16,6 +16,8 @@ public partial class PrismaClient : DbContext
     {
     }
 
+    public virtual DbSet<Cart> Carts { get; set; }
+
     public virtual DbSet<Phone> Phones { get; set; }
 
     public virtual DbSet<Phoneoffer> Phoneoffers { get; set; }
@@ -44,6 +46,32 @@ public partial class PrismaClient : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Cart>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("cart");
+
+            entity.HasIndex(e => e.Uid, "Cart_uid_key").IsUnique();
+
+            entity.HasIndex(e => e.UserId, "Cart_userId_key").IsUnique();
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Uid)
+                .HasMaxLength(191)
+                .HasDefaultValueSql("'uuid()'")
+                .HasColumnName("uid");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(191)
+                .HasColumnName("userId");
+
+            entity.HasOne(d => d.User).WithOne(p => p.Cart)
+                .HasPrincipalKey<User>(p => p.Uid)
+                .HasForeignKey<Cart>(d => d.UserId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("Cart_userId_fkey");
+        });
+
         modelBuilder.Entity<Phone>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
@@ -55,6 +83,10 @@ public partial class PrismaClient : DbContext
             entity.HasIndex(e => e.Uid, "Phone_uid_key").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CreateAt)
+                .HasDefaultValueSql("'CURRENT_TIMESTAMP(3)'")
+                .HasColumnType("datetime(3)")
+                .HasColumnName("createAt");
             entity.Property(e => e.Description)
                 .HasMaxLength(191)
                 .HasColumnName("description");
@@ -74,7 +106,9 @@ public partial class PrismaClient : DbContext
             entity.Property(e => e.RatingId)
                 .HasMaxLength(191)
                 .HasColumnName("ratingId");
-            entity.Property(e => e.Sold).HasColumnName("sold");
+            entity.Property(e => e.Sold)
+                .HasMaxLength(191)
+                .HasColumnName("sold");
             entity.Property(e => e.Tags)
                 .HasMaxLength(191)
                 .HasColumnName("tags");
@@ -82,11 +116,15 @@ public partial class PrismaClient : DbContext
                 .HasMaxLength(191)
                 .HasDefaultValueSql("'uuid()'")
                 .HasColumnName("uid");
+            entity.Property(e => e.UpdateAt)
+                .HasDefaultValueSql("'CURRENT_TIMESTAMP(3)'")
+                .HasColumnType("datetime(3)")
+                .HasColumnName("updateAt");
 
             entity.HasOne(d => d.Rating).WithOne(p => p.Phone)
                 .HasPrincipalKey<Phonerating>(p => p.Uid)
                 .HasForeignKey<Phone>(d => d.RatingId)
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("Phone_ratingId_fkey");
         });
 
@@ -201,6 +239,10 @@ public partial class PrismaClient : DbContext
             entity.HasIndex(e => e.Uid, "Store_uid_key").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CreateAt)
+                .HasDefaultValueSql("'CURRENT_TIMESTAMP(3)'")
+                .HasColumnType("datetime(3)")
+                .HasColumnName("createAt");
             entity.Property(e => e.Group)
                 .HasMaxLength(191)
                 .HasColumnName("group");
@@ -217,6 +259,10 @@ public partial class PrismaClient : DbContext
                 .HasMaxLength(191)
                 .HasDefaultValueSql("'uuid()'")
                 .HasColumnName("uid");
+            entity.Property(e => e.UpdateAt)
+                .HasDefaultValueSql("'CURRENT_TIMESTAMP(3)'")
+                .HasColumnType("datetime(3)")
+                .HasColumnName("updateAt");
         });
 
         modelBuilder.Entity<Storetotransaction>(entity =>
@@ -263,13 +309,21 @@ public partial class PrismaClient : DbContext
 
             entity.ToTable("stringtemplate");
 
+            entity.HasIndex(e => e.CartId, "StringTemplate_cartId_fkey");
+
             entity.HasIndex(e => e.TransactionId, "StringTemplate_transactionId_fkey");
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CartId).HasColumnName("cartId");
             entity.Property(e => e.TransactionId).HasColumnName("transactionId");
             entity.Property(e => e.Value)
                 .HasMaxLength(191)
                 .HasColumnName("value");
+
+            entity.HasOne(d => d.Cart).WithMany(p => p.Stringtemplates)
+                .HasForeignKey(d => d.CartId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("StringTemplate_cartId_fkey");
 
             entity.HasOne(d => d.Transaction).WithMany(p => p.Stringtemplates)
                 .HasForeignKey(d => d.TransactionId)
@@ -288,10 +342,21 @@ public partial class PrismaClient : DbContext
             entity.HasIndex(e => e.UserId, "Transaction_userId_fkey");
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CreateAt)
+                .HasDefaultValueSql("'CURRENT_TIMESTAMP(3)'")
+                .HasColumnType("datetime(3)")
+                .HasColumnName("createAt");
+            entity.Property(e => e.Status)
+                .HasColumnType("enum('PROCESSING','SUCCESS','REFUSE')")
+                .HasColumnName("status");
             entity.Property(e => e.Uid)
                 .HasMaxLength(191)
                 .HasDefaultValueSql("'uuid()'")
                 .HasColumnName("uid");
+            entity.Property(e => e.UpdateAt)
+                .HasDefaultValueSql("'CURRENT_TIMESTAMP(3)'")
+                .HasColumnType("datetime(3)")
+                .HasColumnName("updateAt");
             entity.Property(e => e.UserId).HasColumnName("userId");
 
             entity.HasOne(d => d.User).WithMany(p => p.Transactions)

@@ -1,75 +1,75 @@
-using Microsoft.EntityFrameworkCore;
+
+using System.Data;
+using System.Data.Common;
 using PhoneShop.Prisma;
 
-namespace PhoneShop.Lib.Extension;
+namespace Microsoft.EntityFrameworkCore.Infrastructure;
 
-public class PrismaExtension
+public static class DatabaseExtension
 {
-  public static async Task<T> runTransaction<T>(Func<PrismaClient, Task<T>> callback)
-  {
-    using (var db = new PrismaClient())
-    {
-      using (var transaction = db.Database.BeginTransaction())
-      {
-        try
-        {
-          var data = await callback(db);
-          transaction.Commit();
-          return data;
-        }
-        catch (System.Exception e)
-        {
-          transaction.Rollback();
-          if (e is DbUpdateException && e.InnerException != null)
-          {
-            throw new HttpException(e.InnerException.Message);
-          }
 
-          throw new HttpException(e.Message);
-        }
-      }
+  public static async Task<bool> addRelationship<T>(this DatabaseFacade _db, PrismaClient db, int AID, int BID)
+  {
+    try
+    {
+      String script = $"""
+        INSERT _{typeof(T).Name}(A, B)
+          VALUES ({AID}, {BID});
+      """;
+
+      await db.Database.ExecuteSqlRawAsync(script);
+
+      return true;
+    }
+    catch
+    {
+      return false;
     }
   }
 
-  public static async Task runTransaction(Func<PrismaClient, Task> callback)
+  public static async Task<bool> addRelationship<T>(this DatabaseFacade _db, PrismaClient db, String AID, String BID)
   {
-    using (var db = new PrismaClient())
+    try
     {
-      try
-      {
-        await callback(db);
-        db.SaveChanges();
-      }
-      catch (System.Exception e)
-      {
-        if (e is DbUpdateException && e.InnerException != null)
-        {
-          throw new HttpException(e.InnerException.Message);
-        }
+      String script = $"""
+        INSERT _{typeof(T).Name}(A, B)
+          VALUES ({AID}, {BID});
+      """;
 
-        throw new HttpException(e.Message);
-      }
+      await db.Database.ExecuteSqlRawAsync(script);
+
+      return true;
+    }
+    catch
+    {
+      return false;
     }
   }
 
-  public static void runTransaction(Action<PrismaClient> callback)
+  public static async Task<object> ExecuteScalar(this DatabaseFacade database,
+        string sql, List<DbParameter> parameters = null,
+        CommandType commandType = CommandType.Text,
+        int? commandTimeOutInSeconds = null)
   {
-    using (var db = new PrismaClient())
+    Object value;
+    using (var cmd = database.GetDbConnection().CreateCommand())
     {
-      try
+      if (cmd.Connection.State != ConnectionState.Open)
       {
-        callback(db);
-        db.SaveChanges();
+        cmd.Connection.Open();
       }
-      catch (System.Exception e)
+      cmd.CommandText = sql;
+      cmd.CommandType = commandType;
+      if (commandTimeOutInSeconds != null)
       {
-        if (e is DbUpdateException && e.InnerException != null)
-        {
-          throw new HttpException(e.InnerException.Message);
-        }
-
-        throw new HttpException(e.Message);
+        cmd.CommandTimeout = (int)commandTimeOutInSeconds;
       }
+      if (parameters != null)
+      {
+        cmd.Parameters.AddRange(parameters.ToArray());
+      }
+      value = cmd.ExecuteScalarAsync();
     }
+    return value;
   }
 }
