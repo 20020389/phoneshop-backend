@@ -50,8 +50,15 @@ public class UserController : Controller
 
     var token = $"Bearer {_jwt.generateToken(claims)}";
 
+    var userResponse = newUser.parse<UserWithoutPassword>();
+
+    if (userResponse != null)
+    {
+      userResponse.Password = null;
+    }
+
     return Results.Json(
-        new { data = newUser, token }
+        new { data = userResponse, token }
     );
   }
 
@@ -77,8 +84,15 @@ public class UserController : Controller
 
     var token = $"Bearer {_jwt.generateToken(claims)}";
 
+    var userResponse = newUser.parse<UserWithoutPassword>();
+
+    if (userResponse != null)
+    {
+      userResponse.Password = null;
+    }
+
     return Results.Json(
-        new { data = newUser, token }
+        new { data = userResponse, token }
     );
   }
 
@@ -91,10 +105,17 @@ public class UserController : Controller
     {
       var userClaims = identity.Claims;
       var uid = userClaims.FirstOrDefault(claim => claim.Type == "uid")?.Value ?? "null";
-      return Results.Json(new
+      var newUser = await _userService.getUser(uid);
+      var userResponse = newUser.parse<UserWithoutPassword>();
+
+      if (userResponse != null)
       {
-        data = await _userService.getUser(uid)
-      });
+        userResponse.Password = null;
+      }
+
+      return Results.Json(
+          new { data = userResponse }
+      );
     }
     return Results.Unauthorized();
   }
@@ -108,10 +129,17 @@ public class UserController : Controller
     {
       var userClaims = identity.Claims;
       var uid = userClaims.FirstOrDefault(claim => claim.Type == "uid")?.Value ?? "null";
-      return Results.Json(new
+      var newUser = await _userService.updateUser(uid, body);
+      var userResponse = newUser.parse<UserWithoutPassword>();
+
+      if (userResponse != null)
       {
-        data = await _userService.updateUser(uid, body),
-      });
+        userResponse.Password = null;
+      }
+
+      return Results.Json(
+          new { data = userResponse }
+      );
     }
     return Results.Unauthorized();
   }

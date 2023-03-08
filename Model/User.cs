@@ -31,5 +31,7 @@ public partial class User
 
     public DateTime RegisteredAt { get; set; }
 
+    public virtual Cart? Cart { get; set; }
+
     public virtual ICollection<Transaction> Transactions { get; } = new List<Transaction>();
 }

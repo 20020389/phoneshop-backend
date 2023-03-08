@@ -43,3 +43,9 @@ public class UpdateUserBody
 
   public string? Image { get; set; }
 }
+
+public class UserWithoutPassword : User
+{
+
+  public String? Password { get; set; }
+}

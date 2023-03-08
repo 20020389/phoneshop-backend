@@ -13,11 +13,33 @@ public class CreateStoreBody
   public string? PhoneNumber { get; set; }
 }
 
+public class StoreGetQuery
+{
+  public String storeid { get; set; }
+}
+
 public class StoreModel : Store
 {
-  public List<PhoneModel> Products { get; set; }
-  public List<User> Managers { get; set; }
-  public List<TransactionModel> Transactions { get; set; }
+  public List<PhoneModel>? Products { get; set; }
+  public List<User>? Managers { get; set; }
+  public List<TransactionModel>? Transactions { get; set; }
+
+}
+
+public class StoreQuery
+{
+
+  public string Uid { get; set; } = null!;
+
+  public string Name { get; set; } = null!;
+
+  public string Location { get; set; } = null!;
+
+  public string Group { get; set; } = null!;
+
+  public string? PhoneNumber { get; set; }
+
+  public int? productCount { get; set; }
 }
 
 public class PhoneModel : Phone
