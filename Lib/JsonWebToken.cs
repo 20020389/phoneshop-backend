@@ -16,7 +16,7 @@ public class JWT
 
   public int expires { get => _expires; }
 
-  public JWT(IConfiguration config)
+  public JWT(IConfiguration config)//constructor 
   {
     var privateKey = config["JWT:Key"] ?? "";
     var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(privateKey));

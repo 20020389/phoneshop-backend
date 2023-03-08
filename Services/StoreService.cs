@@ -1,4 +1,3 @@
-
 using System.Net;
 using Microsoft.EntityFrameworkCore;
 using PhoneShop.Interface;
@@ -10,11 +9,12 @@ namespace PhoneShop.Service;
 
 public class StoreService
 {
-  public StoreService() { }
+  public StoreService() { }// constructer
 
-  public async Task<Store> createStore(String userId, CreateStoreBody body)
+  public async Task<Store> createStore(String userId, CreateStoreBody body)//Task<Store> là kiểu dữ liệu trả về dùng với async..await
+
   {
-    return await PrismaExtension.runTransaction(async db =>
+    return await PrismaExtension.runTransaction(async db =>//đảm bảo rằng tất cả các thao tác trên cơ sở dữ liệu sẽ được thực hiện trong một giao dịch (transaction).
     {
       var newStore = new Store()
       {
