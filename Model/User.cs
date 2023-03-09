@@ -33,5 +33,7 @@ public partial class User
 
     public virtual Cart? Cart { get; set; }
 
+    public virtual ICollection<Phonerating> Phoneratings { get; } = new List<Phonerating>();
+
     public virtual ICollection<Transaction> Transactions { get; } = new List<Transaction>();
 }

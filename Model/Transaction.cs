@@ -11,13 +11,17 @@ public partial class Transaction
 
     public string Status { get; set; } = null!;
 
-    public int UserId { get; set; }
+    public string? UserId { get; set; }
 
     public DateTime UpdateAt { get; set; }
 
     public DateTime CreateAt { get; set; }
 
+    public int StoreId { get; set; }
+
+    public virtual Store Store { get; set; } = null!;
+
     public virtual ICollection<Stringtemplate> Stringtemplates { get; } = new List<Stringtemplate>();
 
-    public virtual User User { get; set; } = null!;
+    public virtual User? User { get; set; }
 }

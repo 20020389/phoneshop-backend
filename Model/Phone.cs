@@ -25,7 +25,7 @@ public partial class Phone
 
     public string? Sold { get; set; }
 
-    public string? RatingId { get; set; }
+    public double Rating { get; set; }
 
     public DateTime UpdateAt { get; set; }
 
@@ -33,5 +33,5 @@ public partial class Phone
 
     public virtual ICollection<Phoneoffer> Phoneoffers { get; } = new List<Phoneoffer>();
 
-    public virtual Phonerating? Rating { get; set; }
+    public virtual ICollection<Phonerating> Phoneratings { get; } = new List<Phonerating>();
 }

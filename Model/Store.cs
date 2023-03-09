@@ -20,4 +20,6 @@ public partial class Store
     public DateTime UpdateAt { get; set; }
 
     public DateTime CreateAt { get; set; }
+
+    public virtual ICollection<Transaction> Transactions { get; } = new List<Transaction>();
 }

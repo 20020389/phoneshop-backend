@@ -30,8 +30,6 @@ public partial class PrismaClient : DbContext
 
     public virtual DbSet<Store> Stores { get; set; }
 
-    public virtual DbSet<Storetotransaction> Storetotransactions { get; set; }
-
     public virtual DbSet<Storetouser> Storetousers { get; set; }
 
     public virtual DbSet<Stringtemplate> Stringtemplates { get; set; }
@@ -78,8 +76,6 @@ public partial class PrismaClient : DbContext
 
             entity.ToTable("phone");
 
-            entity.HasIndex(e => e.RatingId, "Phone_ratingId_key").IsUnique();
-
             entity.HasIndex(e => e.Uid, "Phone_uid_key").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
@@ -103,9 +99,7 @@ public partial class PrismaClient : DbContext
             entity.Property(e => e.Profile)
                 .HasMaxLength(191)
                 .HasColumnName("profile");
-            entity.Property(e => e.RatingId)
-                .HasMaxLength(191)
-                .HasColumnName("ratingId");
+            entity.Property(e => e.Rating).HasColumnName("rating");
             entity.Property(e => e.Sold)
                 .HasMaxLength(191)
                 .HasColumnName("sold");
@@ -120,12 +114,6 @@ public partial class PrismaClient : DbContext
                 .HasDefaultValueSql("'CURRENT_TIMESTAMP(3)'")
                 .HasColumnType("datetime(3)")
                 .HasColumnName("updateAt");
-
-            entity.HasOne(d => d.Rating).WithOne(p => p.Phone)
-                .HasPrincipalKey<Phonerating>(p => p.Uid)
-                .HasForeignKey<Phone>(d => d.RatingId)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("Phone_ratingId_fkey");
         });
 
         modelBuilder.Entity<Phoneoffer>(entity =>
@@ -167,17 +155,33 @@ public partial class PrismaClient : DbContext
 
             entity.ToTable("phonerating");
 
+            entity.HasIndex(e => e.PhoneId, "PhoneRating_phoneId_fkey");
+
             entity.HasIndex(e => e.Uid, "PhoneRating_uid_key").IsUnique();
 
+            entity.HasIndex(e => e.UserId, "PhoneRating_userId_fkey");
+
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Evaluated)
+            entity.Property(e => e.PhoneId)
                 .HasMaxLength(191)
-                .HasColumnName("evaluated");
+                .HasColumnName("phoneId");
             entity.Property(e => e.RatingValue).HasColumnName("ratingValue");
             entity.Property(e => e.Uid)
                 .HasMaxLength(191)
                 .HasDefaultValueSql("'uuid()'")
                 .HasColumnName("uid");
+            entity.Property(e => e.UserId).HasColumnName("userId");
+
+            entity.HasOne(d => d.Phone).WithMany(p => p.Phoneratings)
+                .HasPrincipalKey(p => p.Uid)
+                .HasForeignKey(d => d.PhoneId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("PhoneRating_phoneId_fkey");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Phoneratings)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("PhoneRating_userId_fkey");
         });
 
         modelBuilder.Entity<Phonetostore>(entity =>
@@ -265,25 +269,6 @@ public partial class PrismaClient : DbContext
                 .HasColumnName("updateAt");
         });
 
-        modelBuilder.Entity<Storetotransaction>(entity =>
-        {
-            entity
-                .HasNoKey()
-                .ToTable("_storetotransaction");
-
-            entity.HasIndex(e => new { e.A, e.B }, "_StoreToTransaction_AB_unique").IsUnique();
-
-            entity.HasIndex(e => e.B, "_StoreToTransaction_B_index");
-
-            entity.HasOne(d => d.ANavigation).WithMany()
-                .HasForeignKey(d => d.A)
-                .HasConstraintName("_StoreToTransaction_A_fkey");
-
-            entity.HasOne(d => d.BNavigation).WithMany()
-                .HasForeignKey(d => d.B)
-                .HasConstraintName("_StoreToTransaction_B_fkey");
-        });
-
         modelBuilder.Entity<Storetouser>(entity =>
         {
             entity
@@ -337,6 +322,8 @@ public partial class PrismaClient : DbContext
 
             entity.ToTable("transaction");
 
+            entity.HasIndex(e => e.StoreId, "Transaction_storeId_fkey");
+
             entity.HasIndex(e => e.Uid, "Transaction_uid_key").IsUnique();
 
             entity.HasIndex(e => e.UserId, "Transaction_userId_fkey");
@@ -349,6 +336,7 @@ public partial class PrismaClient : DbContext
             entity.Property(e => e.Status)
                 .HasColumnType("enum('PROCESSING','SUCCESS','REFUSE')")
                 .HasColumnName("status");
+            entity.Property(e => e.StoreId).HasColumnName("storeId");
             entity.Property(e => e.Uid)
                 .HasMaxLength(191)
                 .HasDefaultValueSql("'uuid()'")
@@ -357,11 +345,19 @@ public partial class PrismaClient : DbContext
                 .HasDefaultValueSql("'CURRENT_TIMESTAMP(3)'")
                 .HasColumnType("datetime(3)")
                 .HasColumnName("updateAt");
-            entity.Property(e => e.UserId).HasColumnName("userId");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(191)
+                .HasColumnName("userId");
+
+            entity.HasOne(d => d.Store).WithMany(p => p.Transactions)
+                .HasForeignKey(d => d.StoreId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("Transaction_storeId_fkey");
 
             entity.HasOne(d => d.User).WithMany(p => p.Transactions)
+                .HasPrincipalKey(p => p.Uid)
                 .HasForeignKey(d => d.UserId)
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("Transaction_userId_fkey");
         });
 

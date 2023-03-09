@@ -11,7 +11,11 @@ public partial class Phonerating
 
     public double RatingValue { get; set; }
 
-    public string Evaluated { get; set; } = null!;
+    public string PhoneId { get; set; } = null!;
 
-    public virtual Phone? Phone { get; set; }
+    public int? UserId { get; set; }
+
+    public virtual Phone Phone { get; set; } = null!;
+
+    public virtual User? User { get; set; }
 }

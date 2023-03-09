@@ -34,6 +34,7 @@ model User {
   Store        Store[]
   Transaction  Transaction[]
   Cart         Cart?
+  PhoneRating  PhoneRating[]
 }
 
 model Store {
@@ -51,8 +52,8 @@ model Store {
 }
 
 model Phone {
-  id          Int          @id @default(autoincrement())
-  uid         String       @unique @default(dbgenerated("(UUID())"))
+  id          Int           @id @default(autoincrement())
+  uid         String        @unique @default(dbgenerated("(UUID())"))
   name        String
   price       Int
   images      String?
@@ -61,12 +62,12 @@ model Phone {
   description String?
   detail      String? // thông số kỹ thuật
   sold        String? // uid của transaction, chưa bán là null  
+  rating      Float
   offers      PhoneOffer[]
-  rating      PhoneRating? @relation(fields: [ratingId], references: [uid])
-  ratingId    String?      @unique
+  ratingInfo  PhoneRating[]
   Stores      Store[]
-  updateAt    DateTime     @default(now())
-  createAt    DateTime     @default(now())
+  updateAt    DateTime      @default(now())
+  createAt    DateTime      @default(now())
 }
 
 model PhoneOffer {
@@ -83,8 +84,10 @@ model PhoneRating {
   id          Int    @id @default(autoincrement())
   uid         String @unique @default(dbgenerated("(UUID())"))
   ratingValue Float
-  evaluated   String //số lượt đánh giá
-  Phone       Phone?
+  user        User?  @relation(fields: [userId], references: [id])
+  Phone       Phone  @relation(fields: [phoneId], references: [uid])
+  phoneId     String
+  userId      Int?
 }
 
 model Transaction {
@@ -92,11 +95,12 @@ model Transaction {
   uid        String            @unique @default(dbgenerated("(UUID())"))
   productsID StringTemplate[]
   status     TransactionStatus
-  consumer   User              @relation(fields: [userId], references: [id])
-  userId     Int
-  providers  Store[]
+  consumer   User?             @relation(fields: [userId], references: [uid])
+  userId     String?
+  providers  Store             @relation(fields: [storeId], references: [id])
   updateAt   DateTime          @default(now())
   createAt   DateTime          @default(now())
+  storeId    Int
 }
 
 model Cart {
