@@ -3,6 +3,7 @@ const mysql = require("mysql");
 const { exec } = require("child_process");
 const consola = require("consola");
 const settings = require("../appsettings.json");
+const { readFile } = require("fs/promises");
 
 const task = process.argv[2];
 const paramater = process.argv[3];
@@ -19,10 +20,11 @@ const paramater = process.argv[3];
 
       const databaseUrl = `mysql://${username}:${password}@${host}:${port}/${dbName}`;
       process.env.DATABASE_URL = databaseUrl;
-
+      /**@type {import('mysql').Connection} */
+      let connection;
       if (paramater === "--clear") {
         try {
-          await clearDatabase({
+          connection = await clearDatabase({
             host,
             port,
             user: username,
@@ -38,8 +40,17 @@ const paramater = process.argv[3];
 
       let script = `yarn build --name ${Date.now()} --schema ./database.prisma`;
       await runScript(script);
+      if (paramater === "--clear") {
+        if (connection) {
+          await addTrigger(connection, dbName);
+        }
+      }
       script = `cd .. && dotnet ef dbcontext scaffold "Host=${host};Database=${dbName};Username=${username};Password=${password};" MySql.EntityFrameworkCore --context-dir Prisma --context PrismaClient --output-dir Model -f --no-build`;
       await runScript(script);
+
+      if (connection) {
+        connection.end();
+      }
       break;
     default:
       throw "No command to excute";
@@ -100,6 +111,8 @@ function clearDatabase({ host, port, user, password, database }) {
         resolve("");
       }
     );
+
+    return connection;
   });
 }
 
@@ -125,4 +138,21 @@ function connectDatabase({ host, port, user, password, database }) {
 
     return connection;
   });
+}
+
+async function addTrigger(connection, database) {
+  const content = await readFile("./trigger.sql", "utf-8");
+  if (content) {
+    content = content.replace("$DATABASE$", database);
+    connection.query(content, function (err, result) {
+      // @ts-ignore
+      connection.destroy();
+      if (err) reject(err);
+      consola.success({
+        message: "Droped Database",
+        badge: true,
+      });
+      resolve("");
+    });
+  }
 }

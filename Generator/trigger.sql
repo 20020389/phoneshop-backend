@@ -1,3 +1,4 @@
+USE $DATABASE$
 DROP TRIGGER IF EXISTS auto_create_cart;
 DELIMITER $$
 
