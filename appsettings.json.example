@@ -2,8 +2,8 @@
   "Prisma": {
     "Host": "localhost",
     "Port": 3306,
-    "Username": "phuong",
-    "Password": "phuong123456",
+    "Username": "maianh",
+    "Password": "dai",
     "DbName": "PhoneStore"
   },
   "Jwt": {
