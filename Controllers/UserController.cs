@@ -100,47 +100,35 @@ public class UserController : Controller
   [Authorize]
   public async Task<IResult> getUser()
   {
-    var identity = HttpContext.User.Identity as ClaimsIdentity;
-    if (identity != null)
+    var uid = JWT.useToken(HttpContext);
+    var newUser = await _userService.getUser(uid);
+    var userResponse = newUser.parse<UserWithoutPassword>();
+
+    if (userResponse != null)
     {
-      var userClaims = identity.Claims;
-      var uid = userClaims.FirstOrDefault(claim => claim.Type == "uid")?.Value ?? "null";
-      var newUser = await _userService.getUser(uid);
-      var userResponse = newUser.parse<UserWithoutPassword>();
-
-      if (userResponse != null)
-      {
-        userResponse.Password = null;
-      }
-
-      return Results.Json(
-          new { data = userResponse }
-      );
+      userResponse.Password = null;
     }
-    return Results.Unauthorized();
+
+    return Results.Json(
+        new { data = userResponse }
+    );
   }
 
   [HttpPost("user")]
   [Authorize]
   public async Task<IResult> updateUser([FromBody] UpdateUserBody body)
   {
-    var identity = HttpContext.User.Identity as ClaimsIdentity;
-    if (identity != null)
+    var uid = JWT.useToken(HttpContext);
+    var newUser = await _userService.updateUser(uid, body);
+    var userResponse = newUser.parse<UserWithoutPassword>();
+
+    if (userResponse != null)
     {
-      var userClaims = identity.Claims;
-      var uid = userClaims.FirstOrDefault(claim => claim.Type == "uid")?.Value ?? "null";
-      var newUser = await _userService.updateUser(uid, body);
-      var userResponse = newUser.parse<UserWithoutPassword>();
-
-      if (userResponse != null)
-      {
-        userResponse.Password = null;
-      }
-
-      return Results.Json(
-          new { data = userResponse }
-      );
+      userResponse.Password = null;
     }
-    return Results.Unauthorized();
+
+    return Results.Json(
+        new { data = userResponse }
+    );
   }
 }

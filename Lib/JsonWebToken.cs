@@ -65,4 +65,18 @@ public class JWT
       throw new HttpException("Unauthorized", HttpStatusCode.Unauthorized);
     }
   }
+
+  public static String useToken(HttpContext context, string key = "uid")
+  {
+    var identity = context.User.Identity as ClaimsIdentity;
+    var userClaims = identity?.Claims;
+    var value = userClaims?.FirstOrDefault(claim => claim.Type == key)?.Value;
+
+    if (value == null)
+    {
+      throw new HttpException("Unauthorized", HttpStatusCode.Unauthorized);
+    }
+
+    return value;
+  }
 }

@@ -21,5 +21,7 @@ public partial class Store
 
     public DateTime CreateAt { get; set; }
 
+    public virtual ICollection<Phone> Phones { get; } = new List<Phone>();
+
     public virtual ICollection<Transaction> Transactions { get; } = new List<Transaction>();
 }

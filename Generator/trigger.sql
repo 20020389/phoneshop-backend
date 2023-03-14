@@ -100,4 +100,16 @@ BEGIN
     DELETE FROM phoneoffer WHERE phoneId = OLD.uid;
 END $$;
 
-#
+-- Xóa phone khi xóa store
+
+DROP TRIGGER IF EXISTS auto_remove_phone;
+DELIMITER $$
+
+CREATE TRIGGER auto_remove_phone
+    BEFORE DELETE
+    ON store
+    FOR EACH ROW
+
+BEGIN
+    DELETE FROM phone WHERE storeId = OLD.uid;
+END$$

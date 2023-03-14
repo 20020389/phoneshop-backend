@@ -24,8 +24,6 @@ public partial class PrismaClient : DbContext
 
     public virtual DbSet<Phonerating> Phoneratings { get; set; }
 
-    public virtual DbSet<Phonetostore> Phonetostores { get; set; }
-
     public virtual DbSet<PrismaMigration> PrismaMigrations { get; set; }
 
     public virtual DbSet<Store> Stores { get; set; }
@@ -76,6 +74,8 @@ public partial class PrismaClient : DbContext
 
             entity.ToTable("phone");
 
+            entity.HasIndex(e => e.StoreId, "Phone_storeId_fkey");
+
             entity.HasIndex(e => e.Uid, "Phone_uid_key").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
@@ -99,10 +99,14 @@ public partial class PrismaClient : DbContext
             entity.Property(e => e.Profile)
                 .HasMaxLength(191)
                 .HasColumnName("profile");
+            entity.Property(e => e.Quantity).HasColumnName("quantity");
             entity.Property(e => e.Rating).HasColumnName("rating");
             entity.Property(e => e.Sold)
                 .HasMaxLength(191)
                 .HasColumnName("sold");
+            entity.Property(e => e.StoreId)
+                .HasMaxLength(191)
+                .HasColumnName("storeId");
             entity.Property(e => e.Tags)
                 .HasMaxLength(191)
                 .HasColumnName("tags");
@@ -114,6 +118,12 @@ public partial class PrismaClient : DbContext
                 .HasDefaultValueSql("'CURRENT_TIMESTAMP(3)'")
                 .HasColumnType("datetime(3)")
                 .HasColumnName("updateAt");
+
+            entity.HasOne(d => d.Store).WithMany(p => p.Phones)
+                .HasPrincipalKey(p => p.Uid)
+                .HasForeignKey(d => d.StoreId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("Phone_storeId_fkey");
         });
 
         modelBuilder.Entity<Phoneoffer>(entity =>
@@ -182,25 +192,6 @@ public partial class PrismaClient : DbContext
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("PhoneRating_userId_fkey");
-        });
-
-        modelBuilder.Entity<Phonetostore>(entity =>
-        {
-            entity
-                .HasNoKey()
-                .ToTable("_phonetostore");
-
-            entity.HasIndex(e => new { e.A, e.B }, "_PhoneToStore_AB_unique").IsUnique();
-
-            entity.HasIndex(e => e.B, "_PhoneToStore_B_index");
-
-            entity.HasOne(d => d.ANavigation).WithMany()
-                .HasForeignKey(d => d.A)
-                .HasConstraintName("_PhoneToStore_A_fkey");
-
-            entity.HasOne(d => d.BNavigation).WithMany()
-                .HasForeignKey(d => d.B)
-                .HasConstraintName("_PhoneToStore_B_fkey");
         });
 
         modelBuilder.Entity<PrismaMigration>(entity =>

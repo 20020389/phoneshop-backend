@@ -51,20 +51,20 @@ public class StoreService
   {
     return await PrismaExtension.runTask(async db =>
     {
-      var storeDatas = await db.Database.SqlQueryRaw<StoreQuery>($"""
-          SELECT s.uid, s.name, s.location, s.group, s.phoneNumber, s.soluong as productCount
-            FROM user AS u
-            JOIN (SELECT s2.*, _storetouser.B
-               FROM _storetouser
-                  JOIN (SELECT st.*, COUNT(p.A) AS soluong
-                    FROM store AS st
-                      JOIN _phonetostore p ON st.id = p.B
-                            GROUP BY p.B) s2
-                             ON A = s2.id) s ON u.id = s.B
-            WHERE u.id = 1;
-      """).AsNoTracking().ToListAsync();
-
-      System.Console.WriteLine(storeDatas.ToArray());
+      var storeDatas = await db.Users.Where(x => x.Uid == userUid)
+        .GroupJoin(db.Storetousers, x => x.Id, y => y.B, (user, storeToUser) => new
+        {
+          storeToUser
+        }).Select(res => db.Stores.GroupJoin(res.storeToUser, x => x.Id, y => y.A, (store, _) => new
+        {
+          Uid = store.Uid,
+          Name = store.Name,
+          Location = store.Location,
+          Group = store.Group,
+          PhoneNumber = store.PhoneNumber,
+          Transactions = store.Transactions,
+          phoneCount = db.Phonetostores.Where(x => x.B == store.Id).Count()
+        }).ToList()).FirstAsync();
 
       return storeDatas;
     });
