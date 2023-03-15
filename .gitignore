@@ -49,3 +49,6 @@ next-env.d.ts
 **/.vscode
 **/.idea
 appsettings.json
+Upload
+Model
+Prisma

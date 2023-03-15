@@ -1,8 +1,8 @@
 ﻿using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Json;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
-using PhoneShop.Prisma;
 using PhoneShop.Service;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,6 +37,7 @@ builder.Services
 
 builder.Services.AddSingleton<UserService>();
 builder.Services.AddSingleton<StoreService>();
+builder.Services.AddSingleton<UploadService>();
 
 builder.Services.AddControllers();
 
@@ -55,6 +56,14 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+System.Console.WriteLine(Path.Combine(Directory.GetCurrentDirectory(), @"Upload"));
+
+// app.UseStaticFiles(new StaticFileOptions()
+// {
+//   FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, "Upload")),
+//   RequestPath = "/api/cloud"
+// });
 
 // app.Use(
 //     async (context, next) =>

@@ -122,3 +122,12 @@ model StringTemplate {
   Cart          Cart?        @relation(fields: [cartId], references: [id])
   cartId        Int?
 }
+
+model FileModel {
+  id       Int      @id @default(autoincrement())
+  uid      String   @unique @default(dbgenerated("(UUID())"))
+  path     String
+  type     String
+  updateAt DateTime @default(now())
+  createAt DateTime @default(now())
+}
