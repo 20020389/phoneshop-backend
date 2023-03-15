@@ -3,6 +3,7 @@
   "private": "true",
   "scripts": {
     "db": "cd ./Generator && yarn start",
+    "db:studio": "cd ./Generator && yarn studio",
     "dev": "nodemon --exec dotnet run"
   },
   "version": "1.0.0",
