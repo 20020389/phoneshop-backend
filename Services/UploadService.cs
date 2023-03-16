@@ -38,7 +38,7 @@ public class UploadService
         await file.CopyToAsync(stream);
       }
 
-      return $"/api/upload/{uid}";
+      return $"/api/upload/{fileModel.Uid}?updateAt={fileModel.UpdateAt.GetHashCode()}";
     });
   }
 
@@ -83,6 +83,7 @@ public class UploadService
       var filepath = Path.Join(Directory.GetCurrentDirectory(), fileData.Path);
 
       fileData.Type = file.ContentType;
+      fileData.UpdateAt = DateTime.Now;
 
       db.SaveChanges();
 
@@ -96,7 +97,7 @@ public class UploadService
         await file.CopyToAsync(stream);
       }
 
-      return $"/api/upload/{fileData.Uid}";
+      return $"/api/upload/{fileData.Uid}?updateAt={fileData.UpdateAt.GetHashCode()}";
     });
   }
 }

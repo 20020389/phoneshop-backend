@@ -51,12 +51,13 @@ model Store {
   createAt     DateTime      @default(now())
 }
 
+//phone là loại mặt hàng, eg: Iphone 14, Samsung S20
 model Phone {
   id          Int           @id @default(autoincrement())
   uid         String        @unique @default(dbgenerated("(UUID())"))
   name        String
   price       Int
-  quantity    Int           @default(0)
+  quantity    Int           @default(0) //số lượng sản phẩm
   images      String?
   tags        String? //keyword hỗ trợ tìm kiếm
   profile     String?
@@ -92,6 +93,7 @@ model PhoneRating {
   userId      Int?
 }
 
+//thông tin giao dịch
 model Transaction {
   id         Int               @id @default(autoincrement())
   uid        String            @unique @default(dbgenerated("(UUID())"))
@@ -105,6 +107,7 @@ model Transaction {
   storeId    Int
 }
 
+//giỏ hàng
 model Cart {
   id     Int              @id @default(autoincrement())
   uid    String           @unique @default(dbgenerated("(UUID())"))
@@ -126,8 +129,8 @@ model StringTemplate {
 model FileModel {
   id       Int      @id @default(autoincrement())
   uid      String   @unique @default(dbgenerated("(UUID())"))
-  path     String
-  type     String
+  path     String //vị trí của file trong storage
+  type     String //kiểu file
   updateAt DateTime @default(now())
   createAt DateTime @default(now())
 }

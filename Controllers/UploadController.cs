@@ -60,10 +60,10 @@ public class UploadController : Controller
     {
       throw new HttpException("File is required", HttpStatusCode.BadRequest);
     }
-    await _uploadService.UpdateFileAsync(file, fileId);
+
     return Results.Json(new
     {
-      message = "success to update file"
+      data = await _uploadService.UpdateFileAsync(file, fileId)
     });
   }
 }

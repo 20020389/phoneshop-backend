@@ -113,3 +113,36 @@ CREATE TRIGGER auto_remove_phone
 BEGIN
     DELETE FROM phone WHERE storeId = OLD.uid;
 END$$
+
+--
+
+DROP TRIGGER IF EXISTS updatePhoneUpdatedAt;
+DELIMITER $$
+
+CREATE TRIGGER updatePhoneUpdatedAt
+BEFORE UPDATE ON phonestore.phone
+FOR EACH ROW
+BEGIN
+    SET NEW.updateAt = NOW();
+END$$
+
+
+DROP TRIGGER IF EXISTS updateFileModalUpdatedAt;
+DELIMITER $$
+
+CREATE TRIGGER updateFileModalUpdatedAt
+BEFORE UPDATE ON phonestore.filemodal
+FOR EACH ROW
+BEGIN
+    SET NEW.updateAt = NOW();
+END$$
+
+DROP TRIGGER IF EXISTS updateStoreUpdatedAt;
+DELIMITER $$
+
+CREATE TRIGGER updateStoreUpdatedAt
+BEFORE UPDATE ON phonestore.store
+FOR EACH ROW
+BEGIN
+    SET NEW.updateAt = NOW();
+END$$
