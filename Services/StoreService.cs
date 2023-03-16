@@ -51,22 +51,29 @@ public class StoreService
   {
     return await PrismaExtension.runTask(async db =>
     {
-      var storeDatas = await db.Users.Where(x => x.Uid == userUid)
-        .GroupJoin(db.Storetousers, x => x.Id, y => y.B, (user, storeToUser) => new
-        {
-          storeToUser
-        }).Select(res => db.Stores.GroupJoin(res.storeToUser, x => x.Id, y => y.A, (store, _) => new
-        {
-          Uid = store.Uid,
-          Name = store.Name,
-          Location = store.Location,
-          Group = store.Group,
-          PhoneNumber = store.PhoneNumber,
-          Transactions = store.Transactions,
-          phoneCount = db.Phonetostores.Where(x => x.B == store.Id).Count()
-        }).ToList()).FirstAsync();
+      var userData = await db.Users.Where(x => x.Uid == userUid).FirstAsync();
 
-      return storeDatas;
+      if (userData != null)
+      {
+        var relationships = await db.Storetousers.Where(x => x.B == userData.Id).ToListAsync();
+
+        if (relationships != null)
+        {
+          return relationships.Select(stu => db.Stores.Where(x => x.Id == stu.A).Select(s => new
+          {
+            Id = s.Id,
+            Name = s.Name,
+            Location = s.Location,
+            Group = s.Group,
+            productCount = s.Phones.Count,
+            updateAt = s.UpdateAt,
+            createAt = s.CreateAt
+          }).First()).ToList().OrderByDescending(s => s.Id);
+        }
+      }
+
+
+      return null;
     });
   }
 
@@ -95,7 +102,7 @@ public class StoreService
       if (storeData.Managers != null)
       {
         var Managers = await db.Users.Where(stu => stu.Id == storeData.Managers.B)
-              .Select(u => new { uid = u.Uid }).ToListAsync();
+              .Select(u => new { Name = u.Name, Image = u.Image, Email = u.Email }).ToListAsync();
 
         return storeData.merge(new
         {
