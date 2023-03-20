@@ -1,5 +1,5 @@
-
-using System.Security.Claims;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PhoneShop.Interface;
@@ -50,4 +50,42 @@ public class StoreController : Controller
       data = (await _storeService.createStore(uid, body))
     });
   }
+
+  [HttpPut("store/id/{storeId}")]
+  [Authorize]
+  public async Task<IResult> updateStore([FromBody] CreateStoreBody body, String storeId)
+  {
+    var uid = JWT.useToken(HttpContext);
+    return Results.Json(new
+    {
+      data = (await _storeService.updateStore(uid, storeId, body))
+    });
+  }
+
+  [HttpDelete("store/id/{storeId}")]
+  [Authorize]
+  public async Task<IResult> deleteStore(String storeId)
+  {
+    var uid = JWT.useToken(HttpContext);
+    return Results.Json(new
+    {
+      data = (await _storeService.deleteStore(uid, storeId))
+    });
+  }
+
+  [HttpPost("store/id/{storeId}/phones")]
+  [Authorize]
+  public async Task<IResult> addProduct([FromBody] CreatePhoneBody body, String storeId)
+  {
+    var uid = JWT.useToken(HttpContext);
+    body.StoreId = storeId;
+    var data = (await _storeService.createPhone(uid, body));
+
+    return Results.Json(new
+    {
+      data
+    }
+    );
+  }
+
 }

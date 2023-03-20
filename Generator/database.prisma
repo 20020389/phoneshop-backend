@@ -56,15 +56,12 @@ model Phone {
   id          Int           @id @default(autoincrement())
   uid         String        @unique @default(dbgenerated("(UUID())"))
   name        String
-  price       Int
-  quantity    Int           @default(0) //số lượng sản phẩm
   images      String?
   tags        String? //keyword hỗ trợ tìm kiếm
   profile     String?
   description String?
   detail      String? // thông số kỹ thuật
-  sold        String? // uid của transaction, chưa bán là null  
-  rating      Float
+  rating      Float?
   offers      PhoneOffer[]
   ratingInfo  PhoneRating[]
   Stores      Store         @relation(fields: [storeId], references: [uid])
@@ -77,7 +74,8 @@ model PhoneOffer {
   id      Int    @id @default(autoincrement())
   uid     String @unique @default(dbgenerated("(UUID())"))
   price   Int
-  color   String //array
+  count   Int    @default(0) //số lượng sản phẩm
+  color   String
   storage String
   Phone   Phone  @relation(fields: [phoneId], references: [uid])
   phoneId String

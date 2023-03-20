@@ -51,3 +51,35 @@ public class TransactionModel : Transaction
 {
   public List<StoreModel> Stores { get; set; }
 }
+
+public class CreatePhoneBody
+{
+  public string Name { get; set; } = null!;
+
+  public string? Images { get; set; }
+
+  public string? Tags { get; set; }
+
+  public string? Profile { get; set; }
+
+  public string? Description { get; set; }
+
+  public string? Detail { get; set; }
+
+  public double? Rating { get; set; }
+
+  public string? StoreId { get; set; } = null!;
+
+  public virtual ICollection<PhoneofferModel>? Phoneoffers { get; set; } = new List<PhoneofferModel>();
+}
+
+public class PhoneofferModel
+{
+  public int Price { get; set; }
+
+  public int Count { get; set; }
+
+  public string Color { get; set; } = null!;
+
+  public string Storage { get; set; } = null!;
+}

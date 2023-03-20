@@ -53,3 +53,33 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJjOWZlYTJmM
 
 ###
 POST http://localhost:4000/api/upload
+
+
+###
+DELETE http://localhost:4000/api/store/id/7c94a1c9-c3af-11ed-bf44-3c7c3f1933e3
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5NWJlZTEzMS1jMmY4LTExZWQtYTgxMC0zYzdjM2YxOTMzZTMiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJkYWlob2MyazIwQGdtYWlsLmNvbSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkRFRkFVTFQiLCJleHAiOjE2NzkwMTIwNjIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NDAwMC8iLCJhdWQiOiIqIn0.h99wpsN3qPoMwQ9OtZdwgps2d0i5m1PguTmXrchBQDw
+
+
+###
+POST http://127.0.0.1:3000/api/store/id/09ea2fd7-c697-11ed-b848-3c7c3f1933e3/phones
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJmYjNhYWE0ZS1jNjk2LTExZWQtYjg0OC0zYzdjM2YxOTMzZTMiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJkYWlob2MyazIwQGdtYWlsLmNvbSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkRFRkFVTFQiLCJleHAiOjE2Nzk0MDcxNDIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NDAwMC8iLCJhdWQiOiIqIn0.QCo_mIJYaQfj38fxWYH1yC8HmWF7x5R1_ptfubYY_GY
+Content-Type: application/json
+
+{
+    "name": "Xiaomi Redmi Note 12",
+    "images": "[\"/api/upload/e3ec4dd7-501b-4ed2-b6ba-8c252e9505b2?updateAt=-1399457247\",\"/api/upload/ed53cab9-2fd9-492b-8ef4-a19c2b215332?updateAt=-1399457247\"]",
+    "phoneoffers": [
+        {
+            "color": "#8ED1FC",
+            "count": "120",
+            "price": "10000000",
+            "storage": "4-128GB"
+        },
+        {
+            "color": "#0693E3",
+            "count": "120",
+            "price": "12000000",
+            "storage": "6-128GB"
+        }
+    ]
+}
