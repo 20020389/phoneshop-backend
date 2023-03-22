@@ -38,6 +38,7 @@ builder.Services
 builder.Services.AddSingleton<UserService>();
 builder.Services.AddSingleton<StoreService>();
 builder.Services.AddSingleton<UploadService>();
+builder.Services.AddSingleton<PhoneService>();
 
 builder.Services.AddControllers();
 

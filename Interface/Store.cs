@@ -83,3 +83,13 @@ public class PhoneofferModel
 
   public string Storage { get; set; } = null!;
 }
+
+public class Pagination
+{
+  public int page;
+  public int limit = 20;
+
+  public int? total;
+  public bool? hasNext;
+  public bool? hasPrev;
+}

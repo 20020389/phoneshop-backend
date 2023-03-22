@@ -24,7 +24,7 @@ class GetStoreData
   public Storetouser? Storetouser { get; set; }
   public List<dynamic>? Managers { get; set; }
 
-  public List<Phone>? Phones { get; set; }
+  public List<String>? Phones { get; set; }
 }
 
 
@@ -165,7 +165,7 @@ public class StoreService
       throw new HttpException("Store not found", HttpStatusCode.NotFound);
     }
 
-    storeData.Phones = await db.Phones.Where(x => x.StoreId == storeData.Uid).ToListAsync();
+    storeData.Phones = await db.Phones.Where(x => x.StoreId == storeData.Uid).Select(p => p.Uid).ToListAsync();
 
     if (storeData.Storetouser != null)
     {
@@ -201,68 +201,6 @@ public class StoreService
       db.SaveChanges();
 
       return "success to remove store";
-    });
-  }
-
-  public async Task<object?> createPhone(String userId, CreatePhoneBody phoneBody)
-  {
-    return await PrismaExtension.runTransaction(async db =>
-    {
-      var storeId = phoneBody.StoreId;
-      var storeUser = await db.Storetousers
-        .Include(x => x.ANavigation)
-        .Include(x => x.BNavigation)
-        .Where(stu => stu.ANavigation.Uid == storeId).FirstAsync();
-
-      if (storeUser == null)
-      {
-        throw new HttpException("store not found", HttpStatusCode.NotFound);
-      }
-
-      if (storeUser.BNavigation.Uid != userId)
-      {
-        throw new HttpException("you not have permission to change this", HttpStatusCode.Forbidden);
-      }
-
-      var newPhone = new Phone()
-      {
-        Name = phoneBody.Name,
-        Images = phoneBody.Images,
-        StoreId = storeId!,
-        Phoneoffers = phoneBody.Phoneoffers!.Select(offer => new Phoneoffer
-        {
-          Price = offer.Price,
-          Count = offer.Count,
-          Color = offer.Color,
-          Storage = offer.Storage,
-        }).ToList()
-      };
-
-      await db.Phones.AddAsync(newPhone);
-
-      db.SaveChanges();
-
-      return new
-      {
-        Uid = newPhone.Uid,
-        Name = newPhone.Name,
-        Images = newPhone.Images,
-        Tags = newPhone.Tags,
-        Profile = newPhone.Profile,
-        Description = newPhone.Description,
-        Detail = newPhone.Detail,
-        Rating = newPhone.Rating,
-        StoreId = newPhone.StoreId,
-        UpdateAt = newPhone.UpdateAt,
-        CreateAt = newPhone.CreateAt,
-        Phoneoffers = newPhone.Phoneoffers.Select(pof => new
-        {
-          Price = pof.Price,
-          Count = pof.Count,
-          Color = pof.Color,
-          Storage = pof.Storage
-        }),
-      };
     });
   }
 }

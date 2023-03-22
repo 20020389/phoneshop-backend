@@ -2,6 +2,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using PhoneShop.Interface;
 using PhoneShop.Lib;
 using PhoneShop.Middleware;
@@ -15,9 +16,11 @@ namespace PhoneShop.Controllers;
 public class StoreController : Controller
 {
   private readonly StoreService _storeService;
-  public StoreController(StoreService storeService) //contructor
+  private readonly PhoneService _phoneService;
+  public StoreController(StoreService storeService, PhoneService phoneService) //contructor
   {
     _storeService = storeService;
+    _phoneService = phoneService;
   }
 
   [HttpGet("user/stores")]
@@ -79,13 +82,43 @@ public class StoreController : Controller
   {
     var uid = JWT.useToken(HttpContext);
     body.StoreId = storeId;
-    var data = (await _storeService.createPhone(uid, body));
+    var data = (await _phoneService.createPhone(uid, body));
 
     return Results.Json(new
     {
       data
-    }
-    );
+    });
   }
 
+  [HttpGet("store/id/{storeId}/phones")]
+  [Authorize]
+  public async Task<IResult> getProducts(String storeId)
+  {
+    var query = Request.Query;
+    var uid = JWT.useToken(HttpContext);
+
+    var page = 1;
+    if (!query["page"].IsNullOrEmpty())
+    {
+      try
+      {
+        page = Int32.Parse(query["page"].ToString());
+      }
+      catch (System.Exception)
+      {
+
+      }
+    }
+
+    var data = (await _phoneService.getPhones(uid, storeId, new Pagination
+    {
+      page = page,
+      limit = 20
+    }));
+
+    return Results.Json(new
+    {
+      data
+    });
+  }
 }
