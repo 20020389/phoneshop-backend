@@ -5,8 +5,8 @@
   "license": "MIT",
   "scripts": {
     "start": "node index.js",
-    "build": "npx prisma migrate dev",
-    "studio": "npx prisma studio --schema ./database.prisma",
+    "build": "prisma migrate dev",
+    "studio": "prisma studio --schema ./database.prisma",
     "clean": "rimraf ./migrations"
   },
   "devDependencies": {

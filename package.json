@@ -1,6 +1,9 @@
 {
   "name": "phoneshop",
   "private": "true",
+  "workspaces": [
+    "./Generator"
+  ],
   "scripts": {
     "db": "cd ./Generator && yarn start",
     "db:studio": "cd ./Generator && yarn studio",
