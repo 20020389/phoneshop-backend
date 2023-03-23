@@ -50,5 +50,3 @@ next-env.d.ts
 **/.idea
 appsettings.json
 Upload
-Model
-Prisma
