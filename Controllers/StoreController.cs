@@ -127,7 +127,7 @@ public class StoreController : Controller
 
     return Results.Json(new
     {
-      message = data
+      data
     });
   }
 
