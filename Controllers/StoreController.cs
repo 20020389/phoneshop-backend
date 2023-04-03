@@ -90,6 +90,48 @@ public class StoreController : Controller
     });
   }
 
+  [HttpDelete("phone/id/{phoneId}")]
+  [Authorize]
+  public async Task<IResult> deleteProduct(String phoneId)
+  {
+    var uid = JWT.useToken(HttpContext);
+    var data = (await _phoneService.deletePhones(uid, phoneId));
+
+    return Results.Json(new
+    {
+      message = data
+    });
+  }
+
+  [HttpGet("phones/newest")]
+  public async Task<IResult> getNewestProducts()
+  {
+    var query = Request.Query;
+    var page = 1;
+    if (!query["page"].IsNullOrEmpty())
+    {
+      try
+      {
+        page = Int32.Parse(query["page"].ToString());
+      }
+      catch (System.Exception)
+      {
+
+      }
+    }
+    var data = (await _phoneService.getNewestPhone(new Pagination
+    {
+      page = page,
+      limit = 30
+    }));
+
+    return Results.Json(new
+    {
+      message = data
+    });
+  }
+
+
   [HttpGet("store/id/{storeId}/phones")]
   [Authorize]
   public async Task<IResult> getProducts(String storeId)
