@@ -40,7 +40,7 @@ const paramater = process.argv[3];
 
       let buildtype = process.env.NODE_ENV == "production" ? "pro" : "dev";
 
-      let script = `yarn build:${buildtype} --name ${Date.now()} --schema ./database.prisma`;
+      let script = `yarn build:${buildtype} --schema ./database.prisma`;
       await runScript(script);
       if (paramater === "--clear") {
         if (connection) {
