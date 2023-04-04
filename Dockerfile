@@ -6,6 +6,8 @@ WORKDIR /app
 COPY PhoneShop.csproj ./
 COPY appsettings.json ./
 RUN dotnet restore
+RUN npm
+RUN npm run db --build --clear
 
 # copy everything else and build app
 COPY . .
