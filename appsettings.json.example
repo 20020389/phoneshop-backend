@@ -1,6 +1,6 @@
 {
   "Prisma": {
-    "Host": "localhost",
+    "Host": "34.126.154.236",
     "Port": 3306,
     "Username": "maianh",
     "Password": "dai",

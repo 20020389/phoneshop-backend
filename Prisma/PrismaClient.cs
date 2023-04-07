@@ -38,7 +38,7 @@ public partial class PrismaClient : DbContext
 
   protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-      => optionsBuilder.UseMySQL("Host=localhost;Database=PhoneStore;Username=maianh;Password=dai2002;");
+      => optionsBuilder.UseMySQL("Host=34.126.154.236;Database=PhoneStore;Username=root;Password=dai2002;");
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
