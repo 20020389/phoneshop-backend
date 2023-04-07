@@ -38,7 +38,7 @@ public partial class PrismaClient : DbContext
 
   protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-      => optionsBuilder.UseMySQL("Host=localhost;Database=PhoneStore;Username=maianh;Password=dai;");
+      => optionsBuilder.UseMySQL("Host=localhost;Database=PhoneStore;Username=maianh;Password=dai2002;");
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
@@ -78,8 +78,8 @@ public partial class PrismaClient : DbContext
 
       entity.Property(e => e.Id).HasColumnName("id");
       entity.Property(e => e.CreateAt)
-              .HasDefaultValueSql("'NOW()'")
-              .HasColumnType("datetime(3)")
+              .HasDefaultValueSql("CURRENT_TIMESTAMP")
+              .HasColumnType("DATETIME")
               .HasColumnName("createAt");
       entity.Property(e => e.Path)
               .HasMaxLength(191)
@@ -92,8 +92,8 @@ public partial class PrismaClient : DbContext
               .HasDefaultValueSql("'uuid()'")
               .HasColumnName("uid");
       entity.Property(e => e.UpdateAt)
-              .HasDefaultValueSql("'NOW()'")
-              .HasColumnType("datetime(3)")
+              .HasDefaultValueSql("CURRENT_TIMESTAMP")
+              .HasColumnType("DATETIME")
               .HasColumnName("updateAt");
     });
 
@@ -109,8 +109,8 @@ public partial class PrismaClient : DbContext
 
       entity.Property(e => e.Id).HasColumnName("id");
       entity.Property(e => e.CreateAt)
-              .HasDefaultValueSql("'NOW()'")
-              .HasColumnType("datetime(3)")
+              .HasDefaultValueSql("CURRENT_TIMESTAMP")
+              .HasColumnType("DATETIME")
               .HasColumnName("createAt");
       entity.Property(e => e.Description)
               .HasMaxLength(191)
@@ -139,8 +139,8 @@ public partial class PrismaClient : DbContext
               .HasDefaultValueSql("'uuid()'")
               .HasColumnName("uid");
       entity.Property(e => e.UpdateAt)
-              .HasDefaultValueSql("'NOW()'")
-              .HasColumnType("datetime(3)")
+              .HasDefaultValueSql("CURRENT_TIMESTAMP")
+              .HasColumnType("DATETIME")
               .HasColumnName("updateAt");
 
       entity.HasOne(d => d.Store).WithMany(p => p.Phones)
@@ -229,8 +229,8 @@ public partial class PrismaClient : DbContext
 
       entity.Property(e => e.Id).HasColumnName("id");
       entity.Property(e => e.CreateAt)
-              .HasDefaultValueSql("'NOW()'")
-              .HasColumnType("datetime(3)")
+              .HasDefaultValueSql("CURRENT_TIMESTAMP")
+              .HasColumnType("DATETIME")
               .HasColumnName("createAt");
       entity.Property(e => e.Group)
               .HasMaxLength(191)
@@ -249,8 +249,8 @@ public partial class PrismaClient : DbContext
               .HasDefaultValueSql("'uuid()'")
               .HasColumnName("uid");
       entity.Property(e => e.UpdateAt)
-              .HasDefaultValueSql("'NOW()'")
-              .HasColumnType("datetime(3)")
+              .HasDefaultValueSql("CURRENT_TIMESTAMP")
+              .HasColumnType("DATETIME")
               .HasColumnName("updateAt");
     });
 
@@ -315,8 +315,8 @@ public partial class PrismaClient : DbContext
 
       entity.Property(e => e.Id).HasColumnName("id");
       entity.Property(e => e.CreateAt)
-              .HasDefaultValueSql("'NOW()'")
-              .HasColumnType("datetime(3)")
+              .HasDefaultValueSql("CURRENT_TIMESTAMP")
+              .HasColumnType("DATETIME")
               .HasColumnName("createAt");
       entity.Property(e => e.Status)
               .HasColumnType("enum('PROCESSING','SUCCESS','REFUSE')")
@@ -327,8 +327,8 @@ public partial class PrismaClient : DbContext
               .HasDefaultValueSql("'uuid()'")
               .HasColumnName("uid");
       entity.Property(e => e.UpdateAt)
-              .HasDefaultValueSql("'NOW()'")
-              .HasColumnType("datetime(3)")
+              .HasDefaultValueSql("CURRENT_TIMESTAMP")
+              .HasColumnType("DATETIME")
               .HasColumnName("updateAt");
       entity.Property(e => e.UserId)
               .HasMaxLength(191)
@@ -364,8 +364,8 @@ public partial class PrismaClient : DbContext
               .HasMaxLength(191)
               .HasColumnName("image");
       entity.Property(e => e.LastLogin)
-              .HasDefaultValueSql("'NOW()'")
-              .HasColumnType("datetime(3)")
+              .HasDefaultValueSql("CURRENT_TIMESTAMP")
+              .HasColumnType("DATETIME")
               .HasColumnName("lastLogin");
       entity.Property(e => e.Name)
               .HasMaxLength(191)
@@ -380,8 +380,8 @@ public partial class PrismaClient : DbContext
               .HasMaxLength(191)
               .HasColumnName("profile");
       entity.Property(e => e.RegisteredAt)
-              .HasDefaultValueSql("'NOW()'")
-              .HasColumnType("datetime(3)")
+              .HasDefaultValueSql("CURRENT_TIMESTAMP")
+              .HasColumnType("DATETIME")
               .HasColumnName("registeredAt");
       entity.Property(e => e.Role)
               .HasDefaultValueSql("'DEFAULT'")
@@ -392,8 +392,8 @@ public partial class PrismaClient : DbContext
               .HasDefaultValueSql("'uuid()'")
               .HasColumnName("uid");
       entity.Property(e => e.UpdateAt)
-              .HasDefaultValueSql("'NOW()'")
-              .HasColumnType("datetime(3)")
+              .HasDefaultValueSql("CURRENT_TIMESTAMP")
+              .HasColumnType("DATETIME")
               .HasColumnName("updateAt");
       entity.Property(e => e.Verified).HasColumnName("verified");
     });
