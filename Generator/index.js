@@ -39,9 +39,13 @@ const paramater = process.argv[3];
       }
 
       let buildtype = process.env.NODE_ENV == "production" ? "pro" : "dev";
-
       let script = `yarn build:${buildtype} --schema ./database.prisma`;
+
+      if (buildtype === "dev") {
+        script += ` --name ${Date.now()}`;
+      }
       await runScript(script);
+
       if (paramater === "--clear") {
         if (connection) {
           await addTrigger(connection, dbName);
