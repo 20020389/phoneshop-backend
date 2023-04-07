@@ -55,7 +55,7 @@ public partial class PrismaClient : DbContext
       entity.Property(e => e.Id).HasColumnName("id");
       entity.Property(e => e.Uid)
               .HasMaxLength(191)
-              .HasDefaultValueSql("uuid()")
+              .HasDefaultValueSql("(uuid())")
               .HasColumnName("uid");
       entity.Property(e => e.UserId)
               .HasMaxLength(191)
@@ -89,7 +89,7 @@ public partial class PrismaClient : DbContext
               .HasColumnName("type");
       entity.Property(e => e.Uid)
               .HasMaxLength(191)
-              .HasDefaultValueSql("uuid()")
+              .HasDefaultValueSql("(uuid())")
               .HasColumnName("uid");
       entity.Property(e => e.UpdateAt)
               .HasDefaultValueSql("CURRENT_TIMESTAMP")
@@ -136,7 +136,7 @@ public partial class PrismaClient : DbContext
               .HasColumnName("tags");
       entity.Property(e => e.Uid)
               .HasMaxLength(191)
-              .HasDefaultValueSql("uuid()")
+              .HasDefaultValueSql("(uuid())")
               .HasColumnName("uid");
       entity.Property(e => e.UpdateAt)
               .HasDefaultValueSql("CURRENT_TIMESTAMP")
@@ -174,7 +174,7 @@ public partial class PrismaClient : DbContext
               .HasColumnName("storage");
       entity.Property(e => e.Uid)
               .HasMaxLength(191)
-              .HasDefaultValueSql("uuid()")
+              .HasDefaultValueSql("(uuid())")
               .HasColumnName("uid");
 
       entity.HasOne(d => d.Phone).WithMany(p => p.Phoneoffers)
@@ -203,7 +203,7 @@ public partial class PrismaClient : DbContext
       entity.Property(e => e.RatingValue).HasColumnName("ratingValue");
       entity.Property(e => e.Uid)
               .HasMaxLength(191)
-              .HasDefaultValueSql("uuid()")
+              .HasDefaultValueSql("(uuid())")
               .HasColumnName("uid");
       entity.Property(e => e.UserId).HasColumnName("userId");
 
@@ -246,7 +246,7 @@ public partial class PrismaClient : DbContext
               .HasColumnName("phoneNumber");
       entity.Property(e => e.Uid)
               .HasMaxLength(191)
-              .HasDefaultValueSql("uuid()")
+              .HasDefaultValueSql("(uuid())")
               .HasColumnName("uid");
       entity.Property(e => e.UpdateAt)
               .HasDefaultValueSql("CURRENT_TIMESTAMP")
@@ -324,7 +324,7 @@ public partial class PrismaClient : DbContext
       entity.Property(e => e.StoreId).HasColumnName("storeId");
       entity.Property(e => e.Uid)
               .HasMaxLength(191)
-              .HasDefaultValueSql("uuid()")
+              .HasDefaultValueSql("(uuid())")
               .HasColumnName("uid");
       entity.Property(e => e.UpdateAt)
               .HasDefaultValueSql("CURRENT_TIMESTAMP")
@@ -389,7 +389,7 @@ public partial class PrismaClient : DbContext
               .HasColumnName("role");
       entity.Property(e => e.Uid)
               .HasMaxLength(191)
-              .HasDefaultValueSql("uuid()")
+              .HasDefaultValueSql("(uuid())")
               .HasColumnName("uid");
       entity.Property(e => e.UpdateAt)
               .HasDefaultValueSql("CURRENT_TIMESTAMP")
