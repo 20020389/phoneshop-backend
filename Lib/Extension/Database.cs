@@ -13,7 +13,7 @@ public static class DatabaseExtension
     try
     {
       String script = $"""
-        INSERT _{typeof(T).Name}(A, B)
+        INSERT _{typeof(T).Name.ToLower()}(A, B)
           VALUES ({AID}, {BID});
       """;
 
@@ -21,8 +21,9 @@ public static class DatabaseExtension
 
       return true;
     }
-    catch
+    catch (Exception e)
     {
+      System.Console.WriteLine(e);
       return false;
     }
   }
@@ -32,7 +33,7 @@ public static class DatabaseExtension
     try
     {
       String script = $"""
-        INSERT _{typeof(T).Name}(A, B)
+        INSERT _{typeof(T).Name.ToLower()}(A, B)
           VALUES ({AID}, {BID});
       """;
 
@@ -40,8 +41,9 @@ public static class DatabaseExtension
 
       return true;
     }
-    catch
+    catch (Exception e)
     {
+      System.Console.WriteLine(e);
       return false;
     }
   }
