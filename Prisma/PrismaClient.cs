@@ -78,7 +78,7 @@ public partial class PrismaClient : DbContext
 
       entity.Property(e => e.Id).HasColumnName("id");
       entity.Property(e => e.CreateAt)
-              .HasDefaultValueSql("'CURRENT_TIMESTAMP(3)'")
+              .HasDefaultValueSql("'NOW()'")
               .HasColumnType("datetime(3)")
               .HasColumnName("createAt");
       entity.Property(e => e.Path)
@@ -92,7 +92,7 @@ public partial class PrismaClient : DbContext
               .HasDefaultValueSql("'uuid()'")
               .HasColumnName("uid");
       entity.Property(e => e.UpdateAt)
-              .HasDefaultValueSql("'CURRENT_TIMESTAMP(3)'")
+              .HasDefaultValueSql("'NOW()'")
               .HasColumnType("datetime(3)")
               .HasColumnName("updateAt");
     });
@@ -109,7 +109,7 @@ public partial class PrismaClient : DbContext
 
       entity.Property(e => e.Id).HasColumnName("id");
       entity.Property(e => e.CreateAt)
-              .HasDefaultValueSql("'CURRENT_TIMESTAMP(3)'")
+              .HasDefaultValueSql("'NOW()'")
               .HasColumnType("datetime(3)")
               .HasColumnName("createAt");
       entity.Property(e => e.Description)
@@ -139,7 +139,7 @@ public partial class PrismaClient : DbContext
               .HasDefaultValueSql("'uuid()'")
               .HasColumnName("uid");
       entity.Property(e => e.UpdateAt)
-              .HasDefaultValueSql("'CURRENT_TIMESTAMP(3)'")
+              .HasDefaultValueSql("'NOW()'")
               .HasColumnType("datetime(3)")
               .HasColumnName("updateAt");
 
@@ -229,7 +229,7 @@ public partial class PrismaClient : DbContext
 
       entity.Property(e => e.Id).HasColumnName("id");
       entity.Property(e => e.CreateAt)
-              .HasDefaultValueSql("'CURRENT_TIMESTAMP(3)'")
+              .HasDefaultValueSql("'NOW()'")
               .HasColumnType("datetime(3)")
               .HasColumnName("createAt");
       entity.Property(e => e.Group)
@@ -249,7 +249,7 @@ public partial class PrismaClient : DbContext
               .HasDefaultValueSql("'uuid()'")
               .HasColumnName("uid");
       entity.Property(e => e.UpdateAt)
-              .HasDefaultValueSql("'CURRENT_TIMESTAMP(3)'")
+              .HasDefaultValueSql("'NOW()'")
               .HasColumnType("datetime(3)")
               .HasColumnName("updateAt");
     });
@@ -315,7 +315,7 @@ public partial class PrismaClient : DbContext
 
       entity.Property(e => e.Id).HasColumnName("id");
       entity.Property(e => e.CreateAt)
-              .HasDefaultValueSql("'CURRENT_TIMESTAMP(3)'")
+              .HasDefaultValueSql("'NOW()'")
               .HasColumnType("datetime(3)")
               .HasColumnName("createAt");
       entity.Property(e => e.Status)
@@ -327,7 +327,7 @@ public partial class PrismaClient : DbContext
               .HasDefaultValueSql("'uuid()'")
               .HasColumnName("uid");
       entity.Property(e => e.UpdateAt)
-              .HasDefaultValueSql("'CURRENT_TIMESTAMP(3)'")
+              .HasDefaultValueSql("'NOW()'")
               .HasColumnType("datetime(3)")
               .HasColumnName("updateAt");
       entity.Property(e => e.UserId)
@@ -364,7 +364,7 @@ public partial class PrismaClient : DbContext
               .HasMaxLength(191)
               .HasColumnName("image");
       entity.Property(e => e.LastLogin)
-              .HasDefaultValueSql("'CURRENT_TIMESTAMP(3)'")
+              .HasDefaultValueSql("'NOW()'")
               .HasColumnType("datetime(3)")
               .HasColumnName("lastLogin");
       entity.Property(e => e.Name)
@@ -380,7 +380,7 @@ public partial class PrismaClient : DbContext
               .HasMaxLength(191)
               .HasColumnName("profile");
       entity.Property(e => e.RegisteredAt)
-              .HasDefaultValueSql("'CURRENT_TIMESTAMP(3)'")
+              .HasDefaultValueSql("'NOW()'")
               .HasColumnType("datetime(3)")
               .HasColumnName("registeredAt");
       entity.Property(e => e.Role)
@@ -392,7 +392,7 @@ public partial class PrismaClient : DbContext
               .HasDefaultValueSql("'uuid()'")
               .HasColumnName("uid");
       entity.Property(e => e.UpdateAt)
-              .HasDefaultValueSql("'CURRENT_TIMESTAMP(3)'")
+              .HasDefaultValueSql("'NOW()'")
               .HasColumnType("datetime(3)")
               .HasColumnName("updateAt");
       entity.Property(e => e.Verified).HasColumnName("verified");
