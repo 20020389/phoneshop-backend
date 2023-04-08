@@ -43,11 +43,9 @@ public partial class PrismaClient : DbContext
                           .AddJsonFile("appsettings.json").Build();
     var host = config["Prisma:Host"];
 
-    System.Console.WriteLine("host", config["AllowedHosts"], config["Prisma"]);
-
     if (!optionsBuilder.IsConfigured)
     {
-      optionsBuilder.UseMySQL("Host=localhost;Database=PhoneStore;Username=root;Password=dai2002;");
+      optionsBuilder.UseMySQL("Host=34.126.154.236;Database=PhoneStore;Username=root;Password=dai2002;");
     }
   }
 
