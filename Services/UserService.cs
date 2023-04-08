@@ -5,6 +5,7 @@ using PhoneShop.Lib.Extension;
 using PhoneShop.Model;
 using PhoneShop.Interface;
 using BC = BCrypt.Net.BCrypt;
+using System.Collections;
 
 namespace PhoneShop.Service;
 
@@ -72,7 +73,7 @@ public class UserService
   {
     return await PrismaExtension.runTransaction(async db =>
     {
-      var user = await db.Users.Where(user => user.Uid == uid).FirstOrDefaultAsync();
+      var user = await db.Users.Where(user => user.Uid == uid).FirstAsync();
 
       if (user == null)
       {
@@ -102,6 +103,124 @@ public class UserService
       db.SaveChanges();
 
       return user;
+    });
+  }
+
+  public async Task<object?> addProductToCart(String userId, String phoneId)
+  {
+    return await PrismaExtension.runTransaction(async db =>
+    {
+      var user = await Util.useMemo(async () =>
+      {
+        return await db.Users.Include(u => u.Cart).Where(u => u.Uid == userId).FirstAsync();
+      });
+
+      var phone = await Util.useMemo(async () =>
+      {
+        return await db.Phones.Where(u => u.Uid == phoneId).FirstAsync();
+      });
+
+      if (user == null)
+      {
+        throw new HttpException("Unauthorized", HttpStatusCode.Unauthorized);
+      }
+
+      if (phone == null)
+      {
+        throw new HttpException("Phone not found", HttpStatusCode.NotFound);
+      }
+
+      if (user.Role == UserRole.STORE)
+      {
+        throw new HttpException("You are not a buyer", HttpStatusCode.UnprocessableEntity);
+      }
+
+      if (user.Cart == null)
+      {
+        var cart = new Cart();
+        cart.Stringtemplates = new[] { new Stringtemplate() { Value = phoneId } };
+        user.Cart = cart;
+      }
+      else
+      {
+        user.Cart.Stringtemplates.Add(new Stringtemplate() { Value = phoneId });
+      }
+
+      db.SaveChanges();
+
+      return new
+      {
+        message = "success"
+      };
+    });
+  }
+
+  public async Task<List<object>> getCart(String userId)
+  {
+    return await PrismaExtension.runTransaction(async db =>
+    {
+      var user = await Util.useMemo(async () =>
+      {
+        return await db.Users.Include(u => u.Cart).Where(u => u.Uid == userId).FirstAsync();
+      });
+
+      if (user == null)
+      {
+        throw new HttpException("Unauthorized", HttpStatusCode.Unauthorized);
+      }
+
+      if (user.Role == UserRole.STORE)
+      {
+        throw new HttpException("You are not a buyer", HttpStatusCode.UnprocessableEntity);
+      }
+
+      var listPhoneId = await Util.useMemo(async () =>
+      {
+        return await db.Stringtemplates.Include(s => s.Cart).Where(s => s.Cart == user.Cart).ToListAsync();
+      });
+
+      if (listPhoneId == null)
+      {
+        var cart = new Cart();
+        cart.Stringtemplates = new List<Stringtemplate>();
+        user.Cart = cart;
+        db.SaveChanges();
+
+        return new List<object> { };
+      }
+      else
+      {
+        var listUniqueId = listPhoneId.DistinctBy(s => s.Value).ToList();
+        var listPhone = new List<object> { };
+        foreach (var phoneTemplate in listUniqueId)
+        {
+          var phoneCount = listPhoneId.Where(id => id.Value == phoneTemplate.Value).ToList().Count;
+
+          var phone = await Util.useMemo(async () => await db.Phones.Include(p => p.Phoneoffers).Select(p => new
+          {
+            Uid = p.Uid,
+            Name = p.Name,
+            Images = p.Images,
+            Count = phoneCount,
+            Phoneoffers = p.Phoneoffers.Select(pof => new
+            {
+              Price = pof.Price,
+              Count = pof.Count,
+              Color = pof.Color,
+              Storage = pof.Storage
+            }),
+          }).Where(p => p.Uid == phoneTemplate.Value).FirstAsync());
+
+          if (phone != null)
+          {
+            listPhone.Add(phone);
+          }
+        }
+
+
+
+        return listPhone;
+      }
     });
   }
 
