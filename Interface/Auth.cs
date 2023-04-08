@@ -6,8 +6,8 @@ namespace PhoneShop.Interface;
 
 public class UserRole
 {
-  public static String STORE = "STORE";
-  public static String DEFAULT = "DEFAULT";
+  public const String STORE = "STORE";
+  public const String DEFAULT = "DEFAULT";
 }
 
 public class RegisterBody
@@ -48,4 +48,9 @@ public class UserWithoutPassword : User
 {
 
   public String? Password { get; set; }
+}
+
+public class AddProductToCartBody
+{
+  public String PhoneId { get; set; }
 }

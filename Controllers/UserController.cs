@@ -131,4 +131,36 @@ public class UserController : Controller
         new { data = userResponse }
     );
   }
+
+  [HttpPost("user/cart")]
+  [Authorize(Roles = UserRole.DEFAULT)]
+  public async Task<IResult> addProductToCart([FromBody] AddProductToCartBody body)
+  {
+    var uid = JWT.useToken(HttpContext);
+    await _userService.addProductToCart(uid, body.PhoneId);
+
+    return Results.Json(
+        new
+        {
+          message = "success"
+        }
+    );
+  }
+
+  [HttpGet("user/cart")]
+  [Authorize(Roles = UserRole.DEFAULT)]
+  public async Task<IResult> getCart()
+  {
+    var uid = JWT.useToken(HttpContext);
+    var data = await _userService.getCart(uid);
+
+    System.Console.WriteLine(data.Count);
+
+    return Results.Json(
+        new
+        {
+          data
+        }
+    );
+  }
 }
