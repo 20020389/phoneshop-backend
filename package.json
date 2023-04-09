@@ -9,6 +9,7 @@
     "db:studio": "cd ./Generator && yarn studio",
     "dev": "nodemon --exec dotnet run",
     "build": "dotnet build",
+    "product": " fuser -k 8080/tcp && pm2 delete server && pm2 start yarn --name server -- start",
     "start": "cross-env NODE_ENV=production ASPNETCORE_URLS=http://+:8080 dotnet ./bin/Debug/net7.0/PhoneShop.dll"
   },
   "version": "1.0.0",
