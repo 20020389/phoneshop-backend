@@ -106,7 +106,7 @@ public class UserService
     });
   }
 
-  public async Task<object?> addProductToCart(String userId, String phoneId)
+  public async Task<object?> addProductToCart(String userId, RemoveProductFromCartBody body)
   {
     return await PrismaExtension.runTransaction(async db =>
     {
@@ -117,7 +117,7 @@ public class UserService
 
       var phone = await Util.useMemo(async () =>
       {
-        return await db.Phones.Where(u => u.Uid == phoneId).FirstAsync();
+        return await db.Phones.Where(u => u.Uid == body.PhoneId).FirstAsync();
       });
 
       if (user == null)
@@ -138,12 +138,15 @@ public class UserService
       if (user.Cart == null)
       {
         var cart = new Cart();
-        cart.Stringtemplates = new[] { new Stringtemplate() { Value = phoneId } };
+        cart.Stringtemplates = new[] { new Stringtemplate() { Value = body.PhoneId } };
         user.Cart = cart;
       }
       else
       {
-        user.Cart.Stringtemplates.Add(new Stringtemplate() { Value = phoneId });
+        for (var i = 0; i < body.Count; i++)
+        {
+          user.Cart.Stringtemplates.Add(new Stringtemplate() { Value = body.PhoneId });
+        }
       }
 
       db.SaveChanges();
@@ -217,10 +220,68 @@ public class UserService
           }
         }
 
-
-
         return listPhone;
       }
+    });
+  }
+
+  public async Task<String> deleteProductFromCart(String userId, RemoveProductFromCartBody body)
+  {
+    return await PrismaExtension.runTransaction(async db =>
+    {
+      var user = await Util.useMemo(async () =>
+      {
+        return await db.Users.Include(u => u.Cart).Where(u => u.Uid == userId).FirstAsync();
+      });
+
+      if (user == null)
+      {
+        throw new HttpException("Unauthorized", HttpStatusCode.Unauthorized);
+      }
+
+      if (user.Role == UserRole.STORE)
+      {
+        throw new HttpException("You are not a buyer", HttpStatusCode.UnprocessableEntity);
+      }
+
+      var listPhoneId = await Util.useMemo(async () =>
+      {
+        if (user.Cart == null)
+        {
+          return new List<Stringtemplate>();
+        }
+
+        return await db.Stringtemplates.Where(s => s.CartId == user.Cart.Id).ToListAsync();
+      });
+
+      if (listPhoneId == null)
+      {
+        var cart = new Cart();
+        cart.Stringtemplates = new List<Stringtemplate>();
+        user.Cart = cart;
+        db.SaveChanges();
+        throw new HttpException("nothing to do", HttpStatusCode.NotModified);
+      }
+      else
+      {
+        var count = body.Count;
+        for (var i = listPhoneId.Count - 1; i >= 0; i--)
+        {
+          if (listPhoneId[i].Value == body.PhoneId)
+          {
+            db.Stringtemplates.Remove(listPhoneId[i]);
+            count--;
+          }
+
+          if (count == 0)
+          {
+            break;
+          }
+        }
+        db.SaveChanges();
+      }
+
+      return "success to update cart";
     });
   }
 

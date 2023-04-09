@@ -54,3 +54,9 @@ public class AddProductToCartBody
 {
   public String PhoneId { get; set; }
 }
+
+public class RemoveProductFromCartBody
+{
+  public String PhoneId { get; set; }
+  public int Count { get; set; } = 1;
+}

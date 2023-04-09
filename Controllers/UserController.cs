@@ -134,10 +134,10 @@ public class UserController : Controller
 
   [HttpPost("user/cart")]
   [Authorize(Roles = UserRole.DEFAULT)]
-  public async Task<IResult> addProductToCart([FromBody] AddProductToCartBody body)
+  public async Task<IResult> addProductToCart([FromBody] RemoveProductFromCartBody body)
   {
     var uid = JWT.useToken(HttpContext);
-    await _userService.addProductToCart(uid, body.PhoneId);
+    await _userService.addProductToCart(uid, body);
 
     return Results.Json(
         new
@@ -154,12 +154,27 @@ public class UserController : Controller
     var uid = JWT.useToken(HttpContext);
     var data = await _userService.getCart(uid);
 
-    System.Console.WriteLine(data.Count);
-
     return Results.Json(
         new
         {
           data
+        }
+    );
+  }
+
+  [HttpDelete("user/cart")]
+  [Authorize(Roles = UserRole.DEFAULT)]
+  public async Task<IResult> deleteCart([FromBody] RemoveProductFromCartBody body)
+  {
+    var uid = JWT.useToken(HttpContext);
+    System.Console.WriteLine(body.PhoneId);
+    System.Console.WriteLine(body.Count);
+    var data = await _userService.deleteProductFromCart(uid, body);
+
+    return Results.Json(
+        new
+        {
+          message = data
         }
     );
   }
