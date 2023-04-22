@@ -10,6 +10,41 @@ using PhoneShop.Model;
 public class PhoneService
 {
 
+  public async Task<object?> getPhone(String phoneId)
+  {
+    return await PrismaExtension.runTask(async db =>
+    {
+      var newPhone = await Util.useMemo(() => db.Phones.Include(p => p.Phoneoffers).Where(p => p.Uid == phoneId).FirstAsync());
+
+      if (newPhone == null)
+      {
+        throw new HttpException("Phone not found", HttpStatusCode.NotFound);
+      }
+
+      return new
+      {
+        Uid = newPhone.Uid,
+        Name = newPhone.Name,
+        Images = newPhone.Images,
+        Tags = newPhone.Tags,
+        Profile = newPhone.Profile,
+        Description = newPhone.Description,
+        Detail = newPhone.Detail,
+        Rating = newPhone.Rating,
+        StoreId = newPhone.StoreId,
+        UpdateAt = newPhone.UpdateAt,
+        CreateAt = newPhone.CreateAt,
+        Phoneoffers = newPhone.Phoneoffers.Select(pof => new
+        {
+          Price = pof.Price,
+          Count = pof.Count,
+          Color = pof.Color,
+          Storage = pof.Storage
+        }),
+      };
+    });
+  }
+
   public async Task<object?> createPhone(String userId, CreatePhoneBody phoneBody)
   {
     return await PrismaExtension.runTransaction(async db =>

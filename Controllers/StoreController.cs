@@ -76,6 +76,17 @@ public class StoreController : Controller
     });
   }
 
+  [HttpGet("phones/id/{phoneId}")]
+  public async Task<IResult> getProduct(String phoneId)
+  {
+    var data = (await _phoneService.getPhone(phoneId));
+
+    return Results.Json(new
+    {
+      data
+    });
+  }
+
   [HttpPost("store/id/{storeId}/phones")]
   [Authorize]
   public async Task<IResult> addProduct([FromBody] CreatePhoneBody body, String storeId)
