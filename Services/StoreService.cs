@@ -1,9 +1,6 @@
 using System.Net;
-using System.Text.Json;
-using Google.Protobuf.WellKnownTypes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using PhoneShop.Interface;
 using PhoneShop.Lib;
 using PhoneShop.Lib.Extension;
@@ -15,10 +12,10 @@ namespace PhoneShop.Service;
 class GetStoreData
 {
   public int Id { get; set; }
-  public String Uid { get; set; }
-  public String Name { get; set; }
-  public String Location { get; set; }
-  public String Group { get; set; }
+  public String? Uid { get; set; }
+  public String? Name { get; set; }
+  public String? Location { get; set; }
+  public String? Group { get; set; }
   public String? PhoneNumber { get; set; }
 
   public Storetouser? Storetouser { get; set; }

@@ -1,7 +1,6 @@
 
 using System.Net;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.ObjectPool;
 using PhoneShop.Interface;
 using PhoneShop.Lib;
 using PhoneShop.Lib.Extension;
@@ -10,11 +9,21 @@ using PhoneShop.Model;
 public class PhoneService
 {
 
-  public async Task<object?> getPhone(String phoneId)
+  public async Task<object?> getPhone(String phoneId, String? userId)
   {
     return await PrismaExtension.runTask(async db =>
     {
       var newPhone = await Util.useMemo(() => db.Phones.Include(p => p.Phoneoffers).Where(p => p.Uid == phoneId).FirstAsync());
+      var owner = false;
+
+      if (newPhone?.StoreId != null)
+      {
+        var store = await Util.useMemo(() => db.Storetousers.Where(s => s.ANavigation.Uid == newPhone.StoreId && s.BNavigation.Uid == userId).FirstAsync());
+        if (store != null)
+        {
+          owner = true;
+        }
+      }
 
       if (newPhone == null)
       {
@@ -34,6 +43,7 @@ public class PhoneService
         StoreId = newPhone.StoreId,
         UpdateAt = newPhone.UpdateAt,
         CreateAt = newPhone.CreateAt,
+        owner = owner,
         Phoneoffers = newPhone.Phoneoffers.Select(pof => new
         {
           Price = pof.Price,

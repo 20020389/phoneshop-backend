@@ -48,30 +48,30 @@ public static class DatabaseExtension
     }
   }
 
-  public static async Task<object> ExecuteScalar(this DatabaseFacade database,
-        string sql, List<DbParameter> parameters = null,
-        CommandType commandType = CommandType.Text,
-        int? commandTimeOutInSeconds = null)
-  {
-    Object value;
-    using (var cmd = database.GetDbConnection().CreateCommand())
-    {
-      if (cmd.Connection.State != ConnectionState.Open)
-      {
-        cmd.Connection.Open();
-      }
-      cmd.CommandText = sql;
-      cmd.CommandType = commandType;
-      if (commandTimeOutInSeconds != null)
-      {
-        cmd.CommandTimeout = (int)commandTimeOutInSeconds;
-      }
-      if (parameters != null)
-      {
-        cmd.Parameters.AddRange(parameters.ToArray());
-      }
-      value = cmd.ExecuteScalarAsync();
-    }
-    return value;
-  }
+  // public static async Task<object> ExecuteScalar(this DatabaseFacade database,
+  //       string sql, List<DbParameter> parameters,
+  //       CommandType commandType = CommandType.Text,
+  //       int? commandTimeOutInSeconds = null)
+  // {
+  //   Object value;
+  //   using (var cmd = database.GetDbConnection().CreateCommand())
+  //   {
+  //     if (cmd.Connection.State != ConnectionState.Open)
+  //     {
+  //       cmd.Connection.Open();
+  //     }
+  //     cmd.CommandText = sql;
+  //     cmd.CommandType = commandType;
+  //     if (commandTimeOutInSeconds != null)
+  //     {
+  //       cmd.CommandTimeout = (int)commandTimeOutInSeconds;
+  //     }
+  //     if (parameters != null)
+  //     {
+  //       cmd.Parameters.AddRange(parameters.ToArray());
+  //     }
+  //     value = cmd.ExecuteScalarAsync();
+  //   }
+  //   return value;
+  // }
 }

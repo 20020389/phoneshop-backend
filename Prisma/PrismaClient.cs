@@ -45,7 +45,7 @@ public partial class PrismaClient : DbContext
 
     if (!optionsBuilder.IsConfigured)
     {
-      optionsBuilder.UseMySQL("Host=34.126.154.236;Database=PhoneStore;Username=root;Password=dai2002;");
+      optionsBuilder.UseMySQL("Host=localhost;Database=PhoneStore;Username=maianh;Password=dai;");
     }
   }
 

@@ -79,7 +79,8 @@ public class StoreController : Controller
   [HttpGet("phones/id/{phoneId}")]
   public async Task<IResult> getProduct(String phoneId)
   {
-    var data = (await _phoneService.getPhone(phoneId));
+    var uid = JWT.tryGetToken(HttpContext);
+    var data = (await _phoneService.getPhone(phoneId, uid));
 
     return Results.Json(new
     {

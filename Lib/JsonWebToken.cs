@@ -41,7 +41,7 @@ public class JWT
     return new JwtSecurityTokenHandler().WriteToken(token);
   }
 
-  public ClaimsPrincipal validateToken(String token)
+  public ClaimsPrincipal validateToken(String token, bool? throwError)
   {
     var paramaters = new TokenValidationParameters()
     {
@@ -60,7 +60,7 @@ public class JWT
     {
       return handler.ValidateToken(token, paramaters, out securityToken);
     }
-    catch (Exception e)
+    catch (Exception)
     {
       throw new HttpException("Unauthorized", HttpStatusCode.Unauthorized);
     }
@@ -77,6 +77,14 @@ public class JWT
       throw new HttpException("Unauthorized", HttpStatusCode.Unauthorized);
     }
 
+    return value;
+  }
+
+  public static String? tryGetToken(HttpContext context, string key = "uid")
+  {
+    var identity = context.User.Identity as ClaimsIdentity;
+    var userClaims = identity?.Claims;
+    var value = userClaims?.FirstOrDefault(claim => claim.Type == key)?.Value;
     return value;
   }
 }
