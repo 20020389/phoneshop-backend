@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using PhoneShop.Interface;
 using PhoneShop.Lib;
 using PhoneShop.Middleware;
+using PhoneShop.Model;
 using PhoneShop.Service;
 
 namespace PhoneShop.Controllers;
@@ -143,6 +144,42 @@ public class StoreController : Controller
     });
   }
 
+  [HttpGet("store/id/{storeId}/transactions")]
+  [Authorize]
+  public async Task<IResult> getTransactions(String storeId)
+  {
+    var uid = JWT.useToken(HttpContext);
+    var data = await _storeService.getStoreTransactions(uid, storeId);
+    return Results.Json(new
+    {
+      data
+    });
+  }
+
+  [HttpPost("store/id/{storeId}/transactions/{transactionId}")]
+  [Authorize]
+  public async Task<IResult> confirmTransaction(String storeId, String transactionId, [FromBody] ConfirmTransaction body)
+  {
+    var uid = JWT.useToken(HttpContext);
+    body.transactionId = transactionId;
+    var data = await _storeService.confirmTransaction(uid, storeId, body);
+    return Results.Json(new
+    {
+      data
+    });
+  }
+
+  [HttpPost("transaction")]
+  [Authorize]
+  public async Task<IResult> createTransaction([FromBody] CreateTransactionBody body)
+  {
+    var uid = JWT.useToken(HttpContext);
+    var data = await _storeService.createTransaction(uid, body.storeId, body.offerId);
+    return Results.Json(new
+    {
+      data
+    });
+  }
 
   [HttpGet("store/id/{storeId}/phones")]
   [Authorize]

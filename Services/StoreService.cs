@@ -62,6 +62,145 @@ public class StoreService
     });
   }
 
+  public async Task<object> getStoreTransactions(string userId, string storeId)
+  {
+    return await PrismaExtension.runTransaction(async db =>
+      {
+        var storeUser = await db.Storetousers.Include(x => x.ANavigation).Include(x => x.BNavigation).Where(stu => stu.ANavigation.Uid == storeId).FirstAsync();
+
+        if (storeUser == null)
+        {
+          throw new HttpException("store not found", HttpStatusCode.NotFound);
+        }
+
+        if (storeUser.BNavigation.Uid != userId)
+        {
+          throw new HttpException("you not have permission to do this", HttpStatusCode.Forbidden);
+        }
+
+        var transactions = await db.Transactions.Include(t => t.Stringtemplates).Where(t => t.StoreId == storeUser.A).ToListAsync();
+
+        // TODO
+        return transactions;
+      });
+  }
+
+  public async Task<object> confirmTransaction(string userId, string storeId, ConfirmTransaction confirmData)
+  {
+    return await PrismaExtension.runTransaction(async db =>
+      {
+        var storeUser = await db.Storetousers.Include(x => x.ANavigation).Include(x => x.BNavigation).Where(stu => stu.ANavigation.Uid == storeId).FirstAsync();
+
+        if (storeUser == null)
+        {
+          throw new HttpException("store not found", HttpStatusCode.NotFound);
+        }
+
+        if (storeUser.BNavigation.Uid != userId)
+        {
+          throw new HttpException("you not have permission to do this", HttpStatusCode.Forbidden);
+        }
+
+        var transaction = await db.Transactions.Include(t => t.Stringtemplates).Where(t => t.StoreId == storeUser.A && t.Uid == confirmData.transactionId).FirstAsync();
+
+        if (transaction == null)
+        {
+          throw new HttpException("transaction not found", HttpStatusCode.NotFound);
+        }
+
+        if (transaction.Status != TransactionStatus.PROCESSING)
+        {
+          throw new HttpException("transaction is confirmed", HttpStatusCode.NotModified);
+        }
+
+        var confirmStatus = confirmData.status.ToUpper();
+
+
+
+        if (confirmStatus == TransactionStatus.SUCCESS)
+        {
+          foreach (var offerTransaction in transaction.Stringtemplates)
+          {
+            var offer = await db.Phoneoffers.Where(po => po.Uid == offerTransaction.Value).FirstAsync();
+            if (offer == null)
+            {
+              throw new HttpException($"offer id {offerTransaction.Value} not found", HttpStatusCode.NotFound);
+            }
+
+            if (offer.Count <= 0)
+            {
+              throw new HttpException($"The product with id {offer.PhoneId} is out of stock", HttpStatusCode.NotFound);
+            }
+
+            offer.Count = offer.Count - 1;
+          }
+
+          transaction.Status = TransactionStatus.SUCCESS;
+        }
+        else
+        {
+          transaction.Status = TransactionStatus.REFUSE;
+        }
+
+        await db.SaveChangesAsync();
+
+        // TODO
+        return transaction;
+      });
+  }
+
+  public async Task<object?> createTransaction(String userId, String storeId, string offerId)
+  {
+    return await PrismaExtension.runTransaction(async db =>
+    {
+      var user = await Util.useMemo(() => db.Users.Where(u => u.Uid == userId).FirstAsync());
+      var store = await Util.useMemo(() => db.Stores.Where(s => s.Uid == storeId).FirstAsync());
+
+      var offer = await Util.useMemo(() => db.Phoneoffers.Where(po => po.Uid == offerId).FirstAsync());
+
+      if (user == null)
+      {
+        throw new HttpException("User not found", HttpStatusCode.NotFound);
+      }
+
+      if (store == null)
+      {
+        throw new HttpException("Store not found", HttpStatusCode.NotFound);
+      }
+
+      if (offer == null)
+      {
+        throw new HttpException("Offer not found", HttpStatusCode.NotFound);
+      }
+
+      if (user.Role == UserRole.STORE)
+      {
+        throw new HttpException("You are not consumer", HttpStatusCode.BadRequest);
+      }
+      var transaction = new Transaction()
+      {
+        StoreId = store.Id,
+        UserId = user.Uid,
+        Status = TransactionStatus.PROCESSING,
+        Stringtemplates = new[] { new Stringtemplate() { Value = offer.Uid, } },
+        CreateAt = DateTime.Now,
+        UpdateAt = DateTime.Now,
+      };
+
+      try
+      {
+        await db.Transactions.AddAsync(transaction);
+        await db.SaveChangesAsync();
+      }
+      catch (System.Exception e)
+      {
+        System.Console.WriteLine(e);
+      }
+
+      return transaction;
+    });
+  }
+
   public async Task<dynamic?> getUserStores(string userUid)
   {
     return await PrismaExtension.runTask(async db =>
@@ -174,6 +313,8 @@ public class StoreService
     return storeData;
   }
 
+
+
   public async Task<string> deleteStore(String userId, String storeId)
   {
     return await PrismaExtension.runTransaction(async db =>
@@ -200,4 +341,6 @@ public class StoreService
       return "success to remove store";
     });
   }
+
+
 }
