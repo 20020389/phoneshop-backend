@@ -46,6 +46,7 @@ public class PhoneService
         owner = owner,
         Phoneoffers = newPhone.Phoneoffers.Select(pof => new
         {
+          Uid = pof.Uid,
           Price = pof.Price,
           Count = pof.Count,
           Color = pof.Color,

@@ -169,6 +169,30 @@ public class StoreController : Controller
     });
   }
 
+  [HttpGet("transaction")]
+  [Authorize]
+  public async Task<IResult> getUserTransactions()
+  {
+    var uid = JWT.useToken(HttpContext);
+    var data = await _storeService.getUserTransactions(uid);
+    return Results.Json(new
+    {
+      data
+    });
+  }
+
+  [HttpDelete("transaction/{transactionId}")]
+  [Authorize]
+  public async Task<IResult> getUserTransactions(String transactionId)
+  {
+    var uid = JWT.useToken(HttpContext);
+    var data = await _storeService.deleteTransaction(uid, transactionId);
+    return Results.Json(new
+    {
+      data
+    });
+  }
+
   [HttpPost("transaction")]
   [Authorize]
   public async Task<IResult> createTransaction([FromBody] CreateTransactionBody body)
