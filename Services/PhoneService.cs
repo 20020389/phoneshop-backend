@@ -56,6 +56,31 @@ public class PhoneService
     });
   }
 
+  public async Task<object> searchPhones(String keyword, int limit)
+  {
+    return await PrismaExtension.runTask(async db => await db.Phones.Select(p => new
+    {
+      Uid = p.Uid,
+      Name = p.Name,
+      Images = p.Images,
+      Tags = p.Tags,
+      Profile = p.Profile,
+      Description = p.Description,
+      Detail = p.Detail,
+      Rating = p.Rating,
+      StoreId = p.StoreId,
+      UpdateAt = p.UpdateAt,
+      CreateAt = p.CreateAt,
+      Phoneoffers = p.Phoneoffers.Select(pof => new
+      {
+        Price = pof.Price,
+        Count = pof.Count,
+        Color = pof.Color,
+        Storage = pof.Storage
+      }),
+    }).Where(p => p.Name.ToLower().Replace(" ", "").Contains(keyword.ToLower().Replace(" ", ""))).OrderByDescending(p => p.CreateAt).Take(limit).ToListAsync());
+  }
+
   public async Task<object?> createPhone(String userId, CreatePhoneBody phoneBody)
   {
     return await PrismaExtension.runTransaction(async db =>

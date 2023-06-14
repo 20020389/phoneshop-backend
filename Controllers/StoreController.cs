@@ -116,6 +116,28 @@ public class StoreController : Controller
     });
   }
 
+  [HttpGet("phone/search")]
+  public async Task<IResult> searchProducts()
+  {
+    var query = Request.Query;
+    var keyword = query["keyword"];
+    var limit = 9999;
+    if (!query["limit"].IsNullOrEmpty())
+    {
+      try
+      {
+        limit = Int32.Parse(query["limit"].ToString());
+      }
+      catch (System.Exception) { }
+    }
+    var data = (await _phoneService.searchPhones(keyword.ToString(), limit));
+
+    return Results.Json(new
+    {
+      data = data
+    });
+  }
+
   [HttpGet("phones/newest")]
   public async Task<IResult> getNewestProducts()
   {

@@ -78,7 +78,7 @@ public class StoreService
           throw new HttpException("you not have permission to do this", HttpStatusCode.Forbidden);
         }
 
-        var transactions = await db.Transactions.Include(t => t.Stringtemplates).Where(t => t.StoreId == storeUser.A).Select(t => new
+        var transactions = await db.Transactions.Include(t => t.User).Include(t => t.Stringtemplates).Where(t => t.StoreId == storeUser.A).Select(t => new
         {
           Id = t.Id,
           Uid = t.Uid,
@@ -87,6 +87,7 @@ public class StoreService
           UpdateAt = t.UpdateAt,
           CreateAt = t.CreateAt,
           Store = t.Store,
+          User = t.User,
           products = t.Stringtemplates.Select(st => db.Phoneoffers
             .Include(po => po.Phone).Select(po => new
             {
